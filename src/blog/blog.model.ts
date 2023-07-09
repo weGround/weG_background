@@ -6,3 +6,4 @@ export interface PostDto {
     createDt: Date;
     updatedDt?: Date;
 }
+
