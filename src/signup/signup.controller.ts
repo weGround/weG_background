@@ -12,11 +12,22 @@ export class SignupController {
         return this.signupSrevice.getAllUsers();
     }
 
-    @Post() 
-    createUser(@Body() userInfo){
-        console.log('유저 회원가입');
-        this.signupSrevice.createUser(userInfo);
-    } 
+    // @Post() 
+    // createUser(@Body() userInfo){
+    //     console.log('유저 회원가입');
+    //     this.signupSrevice.createUser(userInfo);
+    // } 
+    @Post()
+    async createUser(@Body() userInfo, @Response() res) {
+      console.log('유저 회원가입');
+      const message = await this.signupSrevice.createUser(userInfo);
+      
+      if (typeof message === 'string') {
+        return res.send({ message });
+      }
+      
+      return res.send({ message: 'signup success' });
+    }
 
     @Get('/getUser/:userid')
     async getUser(@Param('userid') userid: string) {

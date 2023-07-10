@@ -8,7 +8,7 @@ Content-Type: application/json
 
 
 {
-    "userid" : "abc",
+    "userid" : "test1",
     "pw" : "test23pw1"
 }
 
