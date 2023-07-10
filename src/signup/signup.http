@@ -17,7 +17,7 @@ GET {{server}}/signup/getUser/hgrhrhuy
 
 
 ###
-DELETE {{server}}/signup/delete/tehgfhgfhgstid2
+DELETE {{server}}/signup/delete/abcd
 
 ###
 PUT {{server}}/signup/update/hgrhrhuy
