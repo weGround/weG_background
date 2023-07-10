@@ -8,7 +8,7 @@ Content-Type: application/json
 
 
 {
-    "userid" : "dafsdafasdfasdfasfasd",
+    "userid" : "abc",
     "pw" : "test23pw1"
 }
 
@@ -17,14 +17,22 @@ GET {{server}}/signup/getUser/hgrhrhuy
 
 
 ###
-DELETE {{server}}/signup/delete/abcd
+DELETE {{server}}/signup/delete/sdfsdfsasssssss
 
 ###
-PUT {{server}}/signup/update/hgrhrhuy
+PUT {{server}}/signup/update/64abae7c461f2e2edcbce488
 Content-Type: application/json
 
 {
     "userid": "tehgfhgfhgstid2",
-    "username": "newjeans",
     "pw" : "testpw2222222"
+}
+
+###
+POST {{server}}/signup/login
+Content-Type: application/json
+
+{
+    "userid": "abc",
+    "pw" : "sd"
 }

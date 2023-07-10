@@ -3,6 +3,8 @@ import { UserInfo } from './signup.model';
 import { Model} from 'mongoose';
 import {SignupMongoRepository } from './signup.repository';
 import { InjectModel } from '@nestjs/mongoose';
+import { userInfo } from 'os';
+
 
 @Injectable()
 export class SignupService {
@@ -28,5 +30,18 @@ export class SignupService {
     }
     updateUser(userid: string, userInfo: UserInfo) {
         return this.signupModel.findOneAndUpdate({ userid }, userInfo, { new: true }).exec();
+    }
+    async validateUser(userid: string, pw: string) {
+        const user = await this.getUser(userid);
+        if(!user) {
+            console.log('없는 사용자');
+            return null;
+        }
+        if(pw === user.pw){
+            console.log('인증성공')
+            return userInfo;
+        }
+        console.log('비번틀림');
+        return null;
     }
 }

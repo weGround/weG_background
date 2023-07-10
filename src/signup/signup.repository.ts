@@ -4,6 +4,7 @@ import { Signup, SignupDocument } from './signup.schema';
 import { Injectable } from '@nestjs/common';
 import {readFile, writeFile } from 'fs/promises';
 import {UserInfo} from './signup.model';
+import { userInfo } from 'os';
 
 export interface SignupRepository {
     getAllUsers(): Promise<UserInfo[]>;
@@ -11,6 +12,7 @@ export interface SignupRepository {
     getUser(userid: String);
     deleteUser(userid: String);
     updateUser(userid: String, userInfo: UserInfo);
+    validateUser(userid: string, pw: string);
 }
 
 @Injectable()
@@ -48,6 +50,15 @@ export class SignupFileRepository implements SignupRepository {
         users[index] = updatePost;
         await writeFile(this.FILE_NAME, JSON.stringify(users));
     }
+    async validateUser(userid: string, pw: string) {
+        const users = await this.getAllUsers();
+        const result = users.find((user) => user.userid === userid);
+        if(!result) return null;
+        if(result.pw === pw){
+            return result;
+        }
+        return null;
+    }
 }
 
 @Injectable()
@@ -74,5 +85,11 @@ export class SignupMongoRepository implements SignupRepository {
     async updateUser(userid: String, userInfo: UserInfo) {
         const updateUser = {userid, ...userInfo };
         await this.SignupModel.findByIdAndUpdate(userid, updateUser);
+    }
+    async validateUser(userid: string, pw: string) {
+        const user = await this.SignupModel.findById(userid);
+        if(!user) return null;
+        if(user.pw === pw) return user;
+        return null;
     }
 }
