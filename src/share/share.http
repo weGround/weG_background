@@ -1,0 +1,42 @@
+@server = http://172.10.5.127:443
+
+Get {{server}}/share
+
+###
+POST {{server}}/share
+Content-Type: application/json
+
+
+{
+"post_id": 1,
+    "post_title": "First Post",
+    "post_detail": "This is the first post",
+    "post_img": "image1.jpg",
+    "post_writer": "John Doe",
+    "like_count": 10,
+    "like_users": ["user1", "user2", "user3"],
+    "comments": [
+      {
+        "comment_id": 1,
+        "comment_detail": "Great post!",
+        "comment_writer": "Alice"
+      },
+      {
+        "comment_id": 2,
+        "comment_detail": "Nice job!",
+        "comment_writer": "Bob"
+      }
+    ]
+
+}
+
+###
+GET {{server}}/share/getPost/
+
+
+###
+DELETE {{server}}/share/delete/
+
+###
+
+

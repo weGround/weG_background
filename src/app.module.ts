@@ -15,6 +15,11 @@ import { GroupController } from './group/group.controller';
 import { GroupModule } from './group/group.module';
 import { GroupFileRepository, GroupMongoRepository } from './group/group.repository'; 
 import { Group, GroupSchema } from './group/group.schema';
+import { ShareModule } from './share/share.module';
+import { ShareFileRepository, ShareMongoRepository } from './share/share.repository'; 
+import { Share, ShareSchema } from './share/share.schema';
+import { ShareService } from './share/share.service';
+import { ShareController } from './share/share.controller';
 
 @Module({
   imports: [
@@ -24,13 +29,17 @@ import { Group, GroupSchema } from './group/group.schema';
     MongooseModule.forFeature([{ name: Signup.name, schema: SignupSchema }]),
     MongooseModule.forRoot('mongodb://localhost:27017/group'),
     MongooseModule.forFeature([{ name: Group.name, schema: GroupSchema }]),
+    MongooseModule.forRoot('mongodb://localhost:27017/share'),
+    MongooseModule.forFeature([{ name: Share.name, schema: ShareSchema }]),
     GroupModule,
+    ShareModule,
      // Signup 컬렉션을 등록
   ],
-  controllers: [AppController, BlogController, SignupController, GroupController], // Signup 컨트롤러를 추가
+  controllers: [AppController, BlogController, SignupController, GroupController, ShareController], // Signup 컨트롤러를 추가
   providers: [ AppService, 
     BlogService, BlogFileRepository, BlogMongoRepository, 
     SignupService, SignupFileRepository, SignupMongoRepository, 
-    GroupService, GroupFileRepository, GroupMongoRepository ], // Signup 리포지토리를 추가
+    GroupService, GroupFileRepository, GroupMongoRepository,
+    ShareService, ShareFileRepository, ShareMongoRepository, ], // Signup 리포지토리를 추가
 })
 export class AppModule {}
