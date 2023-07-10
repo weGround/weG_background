@@ -6,7 +6,8 @@ import { SignupService } from './signup.service';
 
 @Module({
     imports: [MongooseModule.forFeature([{ name: Signup.name, schema: SignupSchema}])],
-    providers: [SignupService, SignupMongoRepository ]
+    providers: [SignupService, SignupMongoRepository ],
+    exports: [SignupService],
 
 })
 export class SignupModule {}

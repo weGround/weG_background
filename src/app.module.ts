@@ -10,8 +10,9 @@ import { SignupController } from './signup/signup.controller'; // Signup 컨트�
 import { SignupFileRepository, SignupMongoRepository } from './signup/signup.repository'; // Signup 리포지토리를 가져옴
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserinfoController } from './userinfo/userinfo.controller';
-import { UserinfoModule } from './userinfo/userinfo.module';
+// import { UserinfoController } from './userinfo/userinfo.controller';
+// import { UserinfoModule } from './userinfo/userinfo.module';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [
@@ -19,9 +20,9 @@ import { UserinfoModule } from './userinfo/userinfo.module';
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forRoot('mongodb://localhost:27017/signup'),
     MongooseModule.forFeature([{ name: Signup.name, schema: SignupSchema }]),
-    UserinfoModule, // Signup 컬렉션을 등록
+     // Signup 컬렉션을 등록
   ],
-  controllers: [AppController, BlogController, SignupController, UserinfoController], // Signup 컨트롤러를 추가
+  controllers: [AppController, BlogController, SignupController, AuthController], // Signup 컨트롤러를 추가
   providers: [ AppService, 
     BlogService, BlogFileRepository, BlogMongoRepository, 
     SignupService, SignupFileRepository, SignupMongoRepository], // Signup 리포지토리를 추가
