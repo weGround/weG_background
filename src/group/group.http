@@ -1,0 +1,38 @@
+@server = http://172.10.5.127:443
+
+Get {{server}}/group
+
+###
+POST {{server}}/group
+Content-Type: application/json
+
+
+{
+    "groupname" : "2분반",
+    "groupinfo" : "2분반이좋아요",
+    "groupimg" : "sadfalskjdflasdjfklasdj",
+    "groupmembers" : [
+        "김병만", "유재석", "강호동"
+    ]
+}
+
+###
+GET {{server}}/group/getGroup/hgrhrhuy
+
+
+###
+DELETE {{server}}/group/delete/sdfsdfsasssssss
+
+###
+PUT {{server}}/group/update/2분반
+Content-Type: application/json
+
+{
+    "groupname" : "2분반",
+    "groupinfo" : "2분반이좋아요",
+    "groupimg" : "sadfalskjdflasdjfklasdj",
+    "groupmembers" : [
+        "엄복동", "김복동", "김제동"
+    ]
+}
+
