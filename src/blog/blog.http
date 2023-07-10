@@ -1,0 +1,31 @@
+@server = http://172.10.5.127:443
+
+Get {{server}}/blog
+
+###
+POST {{server}}/blog
+Content-Type: application/json
+
+
+{
+    "title" : "안녕하세요",
+    "content" : "콘텐츠",
+    "name" : "이름"
+}
+
+###
+GET {{server}}/blog/64aa92ea8a663811cb72b77f
+
+
+###
+DELETE {{server}}/blog/64aa92ea8a663811cb72b77f
+
+###
+PUT {{server}}/blog/64aa92ea8a663811cb72b77f
+Content-Type: application/json
+
+{
+    "title": "타이틀수정2",
+    "content": "본문수정2",
+    "name" : "yinaePark"
+}
