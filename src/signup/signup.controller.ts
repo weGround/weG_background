@@ -75,4 +75,14 @@ export class SignupController {
     }
 
 
+
+    @Get('/getUserMyGroupProfiles/:userid/:groupname')
+    async getUserMyGroupProfiles(
+      @Param('userid') userid: string,
+      @Param('groupname') groupname: string
+    ) {
+      console.log(`그룹 프로필 가져오기`);
+      return this.signupService.getUserMyGroupProfiles(userid, groupname);
+  }
+
 }

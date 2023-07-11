@@ -3,7 +3,7 @@ import { Model, TypeExpressionOperatorReturningObjectId } from 'mongoose';
 import { Signup, SignupDocument } from './signup.schema';
 import { Injectable } from '@nestjs/common';
 import {readFile, writeFile } from 'fs/promises';
-import {UserInfo} from './signup.model';
+import {UserInfo, MyGroupProfile} from './signup.model';
 import { userInfo } from 'os';
 
 export interface SignupRepository {
@@ -14,75 +14,93 @@ export interface SignupRepository {
     updateUser(userid: String, userInfo: UserInfo);
     validateUser(userid: string, pw: string);
     joinGroup(userid: string, groupname: string): Promise<UserInfo>;
+    getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null>
 }
 
 @Injectable()
 export class SignupFileRepository implements SignupRepository {
-    FILE_NAME = '/root/madcamp_back/weG_background/src/signup/userinfo.data.json';
+  FILE_NAME = '/root/madcamp_back/weG_background/src/signup/userinfo.data.json';
 
-    async getAllUsers(): Promise<UserInfo[]> {
-        const datas = await readFile(this.FILE_NAME, 'utf8');
-        const users = JSON.parse(datas);
-        return users;
-    }
+  async getAllUsers(): Promise<UserInfo[]> {
+      const datas = await readFile(this.FILE_NAME, 'utf8');
+      const users = JSON.parse(datas);
+      return users;
+  }
 
-    async createUser(userInfo: UserInfo) {
-        const users = await this.getAllUsers();
-        const userid = users.length + 1;
-        const createUser = { userid: userid.toString(), ...userInfo };
-        users.push(createUser);
-        await writeFile(this.FILE_NAME, JSON.stringify(users));
+  async createUser(userInfo: UserInfo) {
+      const users = await this.getAllUsers();
+      const userid = users.length + 1;
+      const createUser = { userid: userid.toString(), ...userInfo };
+      users.push(createUser);
+      await writeFile(this.FILE_NAME, JSON.stringify(users));
 
-    }
-    async getUser(userid: String) {
-        const users = await this.getAllUsers();
-        const result = users.find((user) => user.userid === userid);
-        return result;
-    }
-    async deleteUser(userid: String) {
-        const users = await this.getAllUsers();
-        const filteredPosts = users.filter((user) => user.userid !== userid);
-        await writeFile(this.FILE_NAME, JSON.stringify(filteredPosts));
-    }
-    async updateUser(userid: String, userInfo: UserInfo) {
-        const users = await this.getAllUsers();
-        const index = users.findIndex((user) => user.userid === userid);
-        const updatePost = {userid, ...userInfo };
-        users[index] = updatePost;
-        await writeFile(this.FILE_NAME, JSON.stringify(users));
-    }
-    async validateUser(userid: string, pw: string) {
-        const users = await this.getAllUsers();
-        const result = users.find((user) => user.userid === userid);
-        if(!result) return null;
-        if(result.pw === pw){
-            return result;
-        }
-        return null;
-    }
-
-    async joinGroup(userid: string, groupname: string): Promise<UserInfo> {
-        const users = await this.getAllUsers();
-        const user = users.find((user) => user.userid === userid);
-        if (user) {
-          user.mygroup.push(groupname);
-          await writeFile(this.FILE_NAME, JSON.stringify(users));
-          return user;
-        } else {
-          throw new Error('User not found');
-        }
+  }
+  async getUser(userid: String) {
+      const users = await this.getAllUsers();
+      const result = users.find((user) => user.userid === userid);
+      return result;
+  }
+  async deleteUser(userid: String) {
+      const users = await this.getAllUsers();
+      const filteredPosts = users.filter((user) => user.userid !== userid);
+      await writeFile(this.FILE_NAME, JSON.stringify(filteredPosts));
+  }
+  async updateUser(userid: String, userInfo: UserInfo) {
+      const users = await this.getAllUsers();
+      const index = users.findIndex((user) => user.userid === userid);
+      const updatePost = {userid, ...userInfo };
+      users[index] = updatePost;
+      await writeFile(this.FILE_NAME, JSON.stringify(users));
+  }
+  async validateUser(userid: string, pw: string) {
+      const users = await this.getAllUsers();
+      const result = users.find((user) => user.userid === userid);
+      if(!result) return null;
+      if(result.pw === pw){
+          return result;
       }
-      async existGroup(userid: string, groupname: string): Promise<UserInfo> {
-        const users = await this.getAllUsers();
-        const user = users.find((user) => user.userid === userid);
-        if (user) {
-          const index = user.mygroup.indexOf(groupname);
-          if (index !== -1) {
-            return user;
-          }
-        }
-        throw new Error('User not found or not in the group');
+      return null;
+  }
+
+  async joinGroup(userid: string, groupname: string): Promise<UserInfo> {
+      const users = await this.getAllUsers();
+      const user = users.find((user) => user.userid === userid);
+      if (user) {
+        user.mygroup.push(groupname);
+        await writeFile(this.FILE_NAME, JSON.stringify(users));
+        return user;
+      } else {
+        throw new Error('User not found');
       }
+    }
+  async existGroup(userid: string, groupname: string): Promise<UserInfo> {
+    const users = await this.getAllUsers();
+    const user = users.find((user) => user.userid === userid);
+    if (user) {
+      const index = user.mygroup.indexOf(groupname);
+      if (index !== -1) {
+        return user;
+      }
+    }
+    throw new Error('User not found or not in the group');
+  }
+
+  async getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null> {
+    const users = await this.getAllUsers();
+    const user = users.find((user) => user.userid === userid);
+    if (user) {
+      const profile = user.mygroup_myprofile.find(
+        (profile) => profile.mygroupname === groupname
+      );
+
+      if (profile) {
+        const { mygroupname, mygroup_nickname, mygroup_img, mygroup_detail } = profile;
+        return { mygroupname, mygroup_nickname, mygroup_img, mygroup_detail };
+      }
+    }
+
+    return null; // 사용자 또는 그룹 프로필을 찾을 수 없음
+  }     
 }
 
 @Injectable()
@@ -142,5 +160,19 @@ export class SignupMongoRepository implements SignupRepository {
         throw new Error('User not found or not in the group');
       }
 
-
+      async getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null> {
+        const user = await this.getUser(userid);
+        if (user) {
+          const profile = user.mygroup_myprofile.find(
+            (profile) => profile.mygroupname === groupname
+          );
+    
+          if (profile) {
+            const { mygroupname, mygroup_nickname, mygroup_img, mygroup_detail } = profile;
+            return { mygroupname, mygroup_nickname, mygroup_img, mygroup_detail };
+          }
+        }
+    
+        return null; // 사용자 또는 그룹 프로필을 찾을 수 없음
+      }
 }

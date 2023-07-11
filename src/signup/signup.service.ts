@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserInfo } from './signup.model';
+import { UserInfo, MyGroupProfile } from './signup.model';
 import { userInfo } from 'os';
 import { Model} from 'mongoose';
 import {SignupMongoRepository } from './signup.repository';
@@ -74,5 +74,7 @@ export class SignupService {
       return await this.updateUser(userid, user);
     }
 
-
+    async getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null> {
+      return this.signupRepository.getUserMyGroupProfiles(userid, groupname);
+    }
 }

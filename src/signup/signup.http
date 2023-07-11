@@ -49,3 +49,7 @@ Content-Type: application/json
 DELETE {{server}}/signup/exitGroup/test1/group2
 Content-Type: application/json
 
+
+### Get User Group Profile
+GET /signup/getUserGroupProfile/test1/:groupname
+Content-Type: application/json
