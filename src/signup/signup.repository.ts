@@ -19,7 +19,6 @@ export interface SignupRepository {
     editUserMyGroupProfiles(
       userid: string,
       groupname: string,
-      mygroupname: string,
       mygroup_nickname: string,
       mygroup_img: string,
       mygroup_detail: string
@@ -123,7 +122,6 @@ export class SignupFileRepository implements SignupRepository {
   async editUserMyGroupProfiles(
     userid: string,
     groupname: string,
-    mygroupname: string,
     mygroup_nickname: string,
     mygroup_img: string,
     mygroup_detail: string
@@ -135,6 +133,7 @@ export class SignupFileRepository implements SignupRepository {
         (profile) => profile.mygroupname === groupname
       );
   
+      const mygroupname = groupname;
       if (profileIndex !== -1) {
         user.mygroup_myprofile[profileIndex] = {
           mygroupname,
@@ -237,10 +236,10 @@ export class SignupMongoRepository implements SignupRepository {
 
     return null; // 사용자 또는 그룹 프로필을 찾을 수 없음
   }
+
   async editUserMyGroupProfiles(
     userid: string,
     groupname: string,
-    mygroupname: string,
     mygroup_nickname: string,
     mygroup_img: string,
     mygroup_detail: string
@@ -250,7 +249,7 @@ export class SignupMongoRepository implements SignupRepository {
       const profileIndex = user.mygroup_myprofile.findIndex(
         (profile) => profile.mygroupname === groupname
       );
-  
+      const mygroupname = groupname;
       if (profileIndex !== -1) {
         user.mygroup_myprofile[profileIndex] = {
           mygroupname,
@@ -259,7 +258,9 @@ export class SignupMongoRepository implements SignupRepository {
           mygroup_detail,
         };
         await this.SignupModel.updateOne(
-          { mygroup_myprofile: user.mygroup_myprofile }
+          { userid },
+          { mygroup_myprofile: user.mygroup_myprofile },
+          { new: true },
         ).exec();
         return user.mygroup_myprofile[profileIndex];
       }
@@ -267,6 +268,7 @@ export class SignupMongoRepository implements SignupRepository {
   
     return null; // 사용자 또는 그룹 프로필을 찾을 수 없음
   }
-  
-      
+
+
+
 }

@@ -56,13 +56,12 @@ Content-Type: application/json
 
 
 ###
-PATCH {{server}}/signup/editUserMyGroupProfiles/user1/group5
+PUT {{server}}/signup/editUserMyGroupProfiles/user1/group5
 Content-Type: application/json
 
 {
-  "userid": "example-userid",
-  "groupname": "example-groupname",
-  "mygroupname": "example-mygroupname",
+  "userid": "user1",
+  "groupname": "group5",
   "mygroup_nickname": "example-mygroup_nickname",
   "mygroup_img": "example-mygroup_img",
   "mygroup_detail": "example-mygroup_detail"

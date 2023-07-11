@@ -105,7 +105,6 @@ export class SignupService {
       return this.signupRepository.editUserMyGroupProfiles(
         userid,
         groupname,
-        mygroupname,
         mygroup_nickname,
         mygroup_img,
         mygroup_detail
