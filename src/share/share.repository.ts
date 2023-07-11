@@ -4,6 +4,7 @@ import { ShareInfo } from './share.model';
 import {readFile, writeFile } from 'fs/promises';
 import { Injectable } from '@nestjs/common';
 import { Share, ShareDocument } from './share.schema';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface ShareRepository {
   getAllShares(): Promise<ShareInfo[]>;
@@ -24,11 +25,23 @@ export class ShareFileRepository implements ShareRepository {
     return shares;
   }
 
+  // async createShare(shareInfo: ShareInfo): Promise<ShareInfo> {
+  //   const shares = await this.getAllShares();
+  //   shares.push(shareInfo);
+  //   await writeFile(this.FILE_NAME, JSON.stringify(shares));
+  //   return shareInfo;
+  // }
   async createShare(shareInfo: ShareInfo): Promise<ShareInfo> {
     const shares = await this.getAllShares();
-    shares.push(shareInfo);
+    
+    const newShare: ShareInfo = {
+      _id: uuidv4(), // UUID 형태의 랜덤한 문자열로 설정
+      ...shareInfo
+    };
+
+    shares.push(newShare);
     await writeFile(this.FILE_NAME, JSON.stringify(shares));
-    return shareInfo;
+    return newShare;
   }
 
   async getShare(postId: number): Promise<ShareInfo | null> {
@@ -82,7 +95,8 @@ export class ShareMongoRepository implements ShareRepository {
   }
 
   async createShare(shareInfo: ShareInfo): Promise<ShareInfo> {
-    return await this.shareModel.create(shareInfo);
+    const createdShare = await this.shareModel.create(shareInfo);
+    return createdShare.toObject();
   }
 
   async getShare(postId: number): Promise<ShareInfo | null> {

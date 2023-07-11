@@ -1,4 +1,5 @@
 export interface ShareInfo {
+    _id?:string;
     post_id: number;
     post_group: string;
     post_title: string;

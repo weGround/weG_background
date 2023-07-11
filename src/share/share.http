@@ -8,7 +8,7 @@ Content-Type: application/json
 
 
 {
-"post_id": 1,
+"post_id": 234234,
     "post_title": "First Post",
     "post_detail": "This is the first post",
     "post_img": "image1.jpg",

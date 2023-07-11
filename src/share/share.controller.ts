@@ -1,5 +1,7 @@
 import { Controller, Body, Get, Post, Param, Put, Delete, Request, Response } from '@nestjs/common';
 import { ShareService } from './share.service';
+import { ShareInfo } from './share.model';
+import * as http from 'http';
 
 @Controller('share')
 export class ShareController {
@@ -11,17 +13,27 @@ export class ShareController {
         return this.shareService.getAllShares();
     }
 
+    // @Post()
+    // async createShare(@Body() shareInfo, @Response() res) {
+    //     console.log('공유 게시물 생성');
+    //     const message = await this.shareService.createShare(shareInfo);
+        
+    //     if (typeof message === 'string') {
+    //         return res.send({ message });
+    //     }
+        
+    //     return res.send({ message: 'share create success' });
+    // }
     @Post()
-    async createShare(@Body() shareInfo, @Response() res) {
-        console.log('공유 게시물 생성');
-        const message = await this.shareService.createShare(shareInfo);
-        
-        if (typeof message === 'string') {
-            return res.send({ message });
-        }
-        
-        return res.send({ message: 'share create success' });
+    async createShare(@Body() shareInfo: ShareInfo, @Response() res ) {
+      console.log('공유 게시물 생성');
+      
+      const createdShare = await this.shareService.createShare(shareInfo);
+      
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ _id: createdShare._id, message: 'share create success' }));
     }
+
 
     @Get('/getPost/:post_id')
     async getShare(@Param('post_id') postId: number) {

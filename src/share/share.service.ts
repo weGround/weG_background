@@ -15,8 +15,9 @@ export class ShareService {
     return await this.shareRepository.getAllShares();
   }
 
-  async createShare(shareInfo: ShareInfo) {
-    return await this.shareRepository.createShare(shareInfo);
+  async createShare(shareInfo: ShareInfo): Promise<ShareInfo> {
+    const createdShare = await this.shareRepository.createShare(shareInfo);
+    return createdShare;
   }
 
   async getShare(postId: number) {
