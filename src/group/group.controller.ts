@@ -48,6 +48,22 @@ export class GroupController {
       return this.groupService.getMems(groupname);
     }
     
+    @Put('/updateMems/:groupname')
+    updateMems(@Param('groupname') groupname:string, @Body('groupmembers') groupmembers: string[]) {
+        console.log(`그룹 멤버 수정`);
+        return this.groupService.updateMems(groupname, groupmembers);
+    }
 
+    @Put('/updateImg/:groupname')
+    updateImg(@Param('groupname') groupname:string, @Body('groupimg') groupimg: string) {
+        console.log(`그룹 이미지 수정`);
+        return this.groupService.updateImg(groupname, groupimg);
+    }
+
+    @Put('/updateInfo/:groupname')
+    updateInfo(@Param('groupname') groupname:string, @Body() GroupInfo) {
+        console.log(`그룹 정보 수정`);
+        return this.groupService.updateInfo(groupname, GroupInfo);
+    }
 
 }

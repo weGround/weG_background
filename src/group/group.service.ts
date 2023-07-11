@@ -39,7 +39,30 @@ export class GroupService {
       const group = await this.getGroup(groupname);
       return group ? group.groupmembers : [];
     }
-    
+
+    async updateMems(groupname: string, groupmembers: string[]): Promise<GroupInfo | null> {
+      return this.groupModel.findOneAndUpdate(
+          { groupname },
+          { groupmembers },
+          { new: true }
+      ).exec();
+  }
+
+  async updateImg(groupname: string, groupimg: string): Promise<GroupInfo | null> {
+      return this.groupModel.findOneAndUpdate(
+          { groupname },
+          { groupimg },
+          { new: true }
+      ).exec();
+  }
+
+  async updateInfo(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo | null> {
+      return this.groupModel.findOneAndUpdate(
+          { groupname },
+          groupInfo,
+          { new: true }
+      ).exec();
+  }
     
 }
 
