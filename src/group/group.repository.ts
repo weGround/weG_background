@@ -72,6 +72,11 @@ export class GroupFileRepository implements GroupRepository {
       throw new Error('Group not found');
     }
   }
+  async getImg(groupname: string): Promise<string> {
+    const groups = await this.getAllGroups();
+    const group = groups.find((group) => group.groupname === groupname);
+    return group ? group.groupimg : '';
+  }
 
   async updateImg(groupname: string, groupimg: string): Promise<GroupInfo> {
     const groups = await this.getAllGroups();
@@ -131,6 +136,10 @@ export class GroupMongoRepository implements GroupRepository {
       { groupmembers },
       { new: true }
     ).exec();
+  }
+  async getImg(groupname: string): Promise<string> {
+    const group = await this.groupModel.findOne({ groupname }).exec();
+    return group ? group.groupimg : '';
   }
 
   async updateImg(groupname: string, groupimg: string): Promise<GroupInfo> {

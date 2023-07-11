@@ -48,6 +48,11 @@ export class GroupService {
       ).exec();
   }
 
+  async getImg(groupname: string): Promise<string> {
+    const group = await this.getGroup(groupname);
+    return group ? group.groupimg : '';
+  }
+
   async updateImg(groupname: string, groupimg: string): Promise<GroupInfo | null> {
       return this.groupModel.findOneAndUpdate(
           { groupname },
