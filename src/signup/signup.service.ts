@@ -93,4 +93,26 @@ export class SignupService {
     async getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null> {
       return this.signupRepository.getUserMyGroupProfiles(userid, groupname);
     }
+
+    async editUserMyGroupProfiles(
+      userid: string,
+      groupname: string,
+      mygroupname: string,
+      mygroup_nickname: string,
+      mygroup_img: string,
+      mygroup_detail: string
+    ): Promise<MyGroupProfile | null> {
+      return this.signupRepository.editUserMyGroupProfiles(
+        userid,
+        groupname,
+        mygroupname,
+        mygroup_nickname,
+        mygroup_img,
+        mygroup_detail
+      );
+    }
+    
+
+
+
 }

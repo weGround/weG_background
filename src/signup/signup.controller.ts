@@ -1,6 +1,6 @@
 import { Controller, Body, Get, Post, Param, Put, Delete, Request, Response } from '@nestjs/common';
 import { SignupService } from './signup.service';
-import { UserInfo } from './signup.model';
+import { UserInfo, MyGroupProfile } from './signup.model';
 import { stringify } from 'querystring';
 
 @Controller('signup')
@@ -84,5 +84,25 @@ export class SignupController {
       console.log(`그룹 프로필 가져오기`);
       return this.signupService.getUserMyGroupProfiles(userid, groupname);
   }
+
+  @Put('/editUserMyGroupProfiles/:userid/:groupname')
+    editUserMyGroupProfiles(
+      @Param('userid') userid: string,
+      @Param('groupname') groupname: string,
+      @Body('mygroupname') mygroupname: string,
+      @Body('mygroup_nickname') mygroup_nickname: string,
+      @Body('mygroup_img') mygroup_img: string,
+      @Body('mygroup_detail') mygroup_detail: string
+    ): Promise<MyGroupProfile | null> {
+      return this.signupService.editUserMyGroupProfiles(
+        userid,
+        groupname,
+        mygroupname,
+        mygroup_nickname,
+        mygroup_img,
+        mygroup_detail
+  );
+}
+
 
 }

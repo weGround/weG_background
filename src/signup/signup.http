@@ -8,12 +8,12 @@ Content-Type: application/json
 
 
 {
-    "userid" : "test2",
+    "userid" : "user2",
     "pw" : "test23pw1"
 }
 
 ###
-GET {{server}}/signup/getUser/hgrhrhuy
+GET {{server}}/signup/getUser/test2
 
 
 ###
@@ -38,11 +38,11 @@ Content-Type: application/json
 }
 ###
 
-Post {{server}}/signup/joinGroup/test1
+Post {{server}}/signup/joinGroup/user1
 Content-Type: application/json
 
 {
-  "groupname": "group5"
+  "groupname": "group2"
 }
 
 ###
@@ -51,5 +51,19 @@ Content-Type: application/json
 
 
 ### Get User Group Profile
-GET /signup/getUserGroupProfile/test1/:groupname
+GET {{server}}/signup/getUserMyGroupProfiles/user1/group5
 Content-Type: application/json
+
+
+###
+PATCH {{server}}/signup/editUserMyGroupProfiles/user1/group5
+Content-Type: application/json
+
+{
+  "userid": "example-userid",
+  "groupname": "example-groupname",
+  "mygroupname": "example-mygroupname",
+  "mygroup_nickname": "example-mygroup_nickname",
+  "mygroup_img": "example-mygroup_img",
+  "mygroup_detail": "example-mygroup_detail"
+}

@@ -15,8 +15,16 @@ export interface SignupRepository {
     validateUser(userid: string, pw: string);
     joinGroup(userid: string, groupname: string): Promise<UserInfo>;
     exitGroup(userid: string, groupname: string): Promise<UserInfo>;
-    getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null>
-}
+    getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null>;
+    editUserMyGroupProfiles(
+      userid: string,
+      groupname: string,
+      mygroupname: string,
+      mygroup_nickname: string,
+      mygroup_img: string,
+      mygroup_detail: string
+    ): Promise<MyGroupProfile | null>;
+  }
 
 @Injectable()
 export class SignupFileRepository implements SignupRepository {
@@ -110,7 +118,38 @@ export class SignupFileRepository implements SignupRepository {
     }
 
     return null; // 사용자 또는 그룹 프로필을 찾을 수 없음
-  }     
+  }
+  
+  async editUserMyGroupProfiles(
+    userid: string,
+    groupname: string,
+    mygroupname: string,
+    mygroup_nickname: string,
+    mygroup_img: string,
+    mygroup_detail: string
+  ): Promise<MyGroupProfile | null> {
+    const users = await this.getAllUsers();
+    const user = users.find((user) => user.userid === userid);
+    if (user) {
+      const profileIndex = user.mygroup_myprofile.findIndex(
+        (profile) => profile.mygroupname === groupname
+      );
+  
+      if (profileIndex !== -1) {
+        user.mygroup_myprofile[profileIndex] = {
+          mygroupname,
+          mygroup_nickname,
+          mygroup_img,
+          mygroup_detail,
+        };
+        await writeFile(this.FILE_NAME, JSON.stringify(users));
+        return user.mygroup_myprofile[profileIndex];
+      }
+    }
+  
+    return null; // 사용자 또는 그룹 프로필을 찾을 수 없음
+  }
+  
 }
 
 @Injectable()
@@ -127,7 +166,7 @@ export class SignupMongoRepository implements SignupRepository {
         this.SignupModel.create(createUser);
     }
     async getUser(userid: String): Promise<UserInfo> {
-        return await this.SignupModel.findById(userid);
+      return await this.SignupModel.findOne({ userid }).exec()
     }
 
     async deleteUser(userid: String) {
@@ -183,20 +222,51 @@ export class SignupMongoRepository implements SignupRepository {
       ).exec();
     }
     
-      async getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null> {
-        const user = await this.getUser(userid);
-        if (user) {
-          const profile = user.mygroup_myprofile.find(
-            (profile) => profile.mygroupname === groupname
-          );
-    
-          if (profile) {
-            const { mygroupname, mygroup_nickname, mygroup_img, mygroup_detail } = profile;
-            return { mygroupname, mygroup_nickname, mygroup_img, mygroup_detail };
-          }
-        }
-    
-        return null; // 사용자 또는 그룹 프로필을 찾을 수 없음
+  async getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null> {
+    const user = await this.getUser(userid);
+    if (user) {
+      const profile = user.mygroup_myprofile.find(
+        (profile) => profile.mygroupname === groupname
+      );
+
+      if (profile) {
+        const { mygroupname, mygroup_nickname, mygroup_img, mygroup_detail } = profile;
+        return { mygroupname, mygroup_nickname, mygroup_img, mygroup_detail };
       }
+    }
+
+    return null; // 사용자 또는 그룹 프로필을 찾을 수 없음
+  }
+  async editUserMyGroupProfiles(
+    userid: string,
+    groupname: string,
+    mygroupname: string,
+    mygroup_nickname: string,
+    mygroup_img: string,
+    mygroup_detail: string
+  ): Promise<MyGroupProfile | null> {
+    const user = await this.getUser(userid);
+    if (user) {
+      const profileIndex = user.mygroup_myprofile.findIndex(
+        (profile) => profile.mygroupname === groupname
+      );
+  
+      if (profileIndex !== -1) {
+        user.mygroup_myprofile[profileIndex] = {
+          mygroupname,
+          mygroup_nickname,
+          mygroup_img,
+          mygroup_detail,
+        };
+        await this.SignupModel.updateOne(
+          { mygroup_myprofile: user.mygroup_myprofile }
+        ).exec();
+        return user.mygroup_myprofile[profileIndex];
+      }
+    }
+  
+    return null; // 사용자 또는 그룹 프로필을 찾을 수 없음
+  }
+  
       
 }
