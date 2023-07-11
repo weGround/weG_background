@@ -63,25 +63,9 @@ export class SignupController {
 
 
     @Put('/joinGroup/:userid')
-    async joinGroup(@Param('userid') userid: string, @Body('groupId') groupId: string, @Response() res) {
-      console.log('Join group');
-      try {
-        await this.signupService.joinGroup(userid, groupId);
-        return res.send({ message: 'Joined group successfully' });
-      } catch (error) {
-        return res.send({ message: error.message });
-      }
-    }
-  
-    @Get('/getMygroup/:userid')
-    async getMygroup(@Param('userid') userid: string) {
-      console.log('Get user groups');
-      try {
-        const mygroup = await this.signupService.getMygroup(userid);
-        return { mygroup };
-      } catch (error) {
-        return { error: error.message };
-      }
+    async joinGroup(@Param('userid') userid: string, @Body('groupname') groupname: string) {
+      console.log(`그룹에 유저 추가`);
+      return this.signupService.joinGroup(userid, groupname);
     }
   
 
