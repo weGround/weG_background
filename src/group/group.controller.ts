@@ -56,7 +56,7 @@ export class GroupController {
 
     @Get('/getImg/:groupname')
     async getImg(@Param('groupname') groupname: string) {
-      console.log(`그룹 멤버 가져오기`);
+      console.log(`그룹 이미지 가져오기`);
       return this.groupService.getImg(groupname);
     }
 
