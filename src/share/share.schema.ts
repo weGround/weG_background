@@ -10,6 +10,9 @@ export class Share {
     post_id: number;
 
     @Prop()
+    post_group: string;
+    
+    @Prop()
     post_title: string;
 
     @Prop()
