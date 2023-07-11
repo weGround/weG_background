@@ -97,12 +97,20 @@ export class ShareMongoRepository implements ShareRepository {
     return await this.shareModel.findOneAndUpdate({ post_id: postId }, shareInfo, { new: true }).exec();
   }
   async postLike(postId: number, likeUser: string): Promise<ShareInfo | null> {
-    const share = await this.getShare(postId);
+    const share = await this.shareModel.findOne({ post_id: postId }).exec();
     if (!share) {
       return null;
     }
-    share.like_count += 1;
-    share.like_users.push(likeUser);
+  
+    const userIndex = share.like_users.findIndex((user) => user === likeUser);
+    if (userIndex !== -1) {
+      share.like_count -= 1;
+      share.like_users.splice(userIndex, 1);
+    } else {
+      share.like_count += 1;
+      share.like_users.push(likeUser);
+    }
+  
     return await this.shareModel.findOneAndUpdate({ post_id: postId }, share, { new: true }).exec();
   }
   async postComment(postId: number, commentInfo: { comment_id: number, comment_detail: string, comment_writer: string }): Promise<ShareInfo> {
