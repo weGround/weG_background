@@ -39,4 +39,20 @@ DELETE {{server}}/share/delete/
 
 ###
 
+PUT {{server}}/share/postLike/1
+Content-Type: application/json
 
+{
+  "likeUser": "John"
+}
+
+
+### Create a new comment ###
+POST {{server}}/share/postComment/1
+Content-Type: application/json
+
+{
+  "comment_id": 1,
+  "comment_detail": "This is a new comment.",
+  "comment_writer": "John"
+}

@@ -11,6 +11,7 @@ export interface ShareRepository {
   getShare(postId: number): Promise<ShareInfo | null>;
   deleteShare(postId: number): Promise<void>;
   updateShare(postId: number, shareInfo: ShareInfo): Promise<ShareInfo>;
+  postComment(postId: number, commentInfo: { comment_detail: string, comment_writer: string }): Promise<ShareInfo> 
 }
 
 @Injectable()
@@ -49,6 +50,27 @@ export class ShareFileRepository implements ShareRepository {
     await writeFile(this.FILE_NAME, JSON.stringify(shares));
     return shareInfo;
   }
+  async postLike(postId: number, likeUser: string): Promise<ShareInfo | null> {
+    const shares = await this.getAllShares();
+    const share = shares.find((share) => share.post_id === postId);
+    if (!share) {
+      return null;
+    }
+    share.like_count += 1;
+    share.like_users.push(likeUser);
+    await writeFile(this.FILE_NAME, JSON.stringify(shares));
+    return share;
+  }
+  async postComment(postId: number, commentInfo: { comment_id: number,comment_detail: string, comment_writer: string }): Promise<ShareInfo> {
+    const shares = await this.getAllShares();
+    const shareIndex = shares.findIndex((share) => share.post_id === postId);
+    if (shareIndex === -1) {
+      throw new Error('Share not found');
+    }
+    shares[shareIndex].comments.push(commentInfo);
+    await writeFile(this.FILE_NAME, JSON.stringify(shares));
+    return shares[shareIndex];
+  }
 }
 
 @Injectable()
@@ -73,5 +95,23 @@ export class ShareMongoRepository implements ShareRepository {
 
   async updateShare(postId: number, shareInfo: ShareInfo): Promise<ShareInfo> {
     return await this.shareModel.findOneAndUpdate({ post_id: postId }, shareInfo, { new: true }).exec();
+  }
+  async postLike(postId: number, likeUser: string): Promise<ShareInfo | null> {
+    const share = await this.getShare(postId);
+    if (!share) {
+      return null;
+    }
+    share.like_count += 1;
+    share.like_users.push(likeUser);
+    return await this.shareModel.findOneAndUpdate({ post_id: postId }, share, { new: true }).exec();
+  }
+  async postComment(postId: number, commentInfo: { comment_id: number, comment_detail: string, comment_writer: string }): Promise<ShareInfo> {
+    const share = await this.getShare(postId);
+    if (!share) {
+      throw new Error('Share not found');
+    }
+    share.comments.push(commentInfo);
+    await this.updateShare(postId, share);
+    return share;
   }
 }

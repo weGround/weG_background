@@ -42,4 +42,23 @@ export class ShareController {
         console.log('공유 게시물 삭제');
         return this.shareService.deleteShare(postId);
     }   
+
+    @Put('/postLike/:post_id')
+    async postLike(@Param('post_id') postId: number, @Body('likeUser') likeUser: string, @Response() res) {
+        console.log(`좋아요 추가`);
+        const share = await this.shareService.postLike(postId, likeUser);
+        if (share) {
+            return res.send({ message: '좋아요 추가 완료' });
+        } else {
+            return res.send({ message: '게시물을 찾을 수 없습니다' });
+        }
+    }
+    @Post('/postComment/:post_id')
+        async postComment(
+        @Param('post_id') postId: number,
+        @Body() commentInfo: { comment_id: number, comment_detail: string, comment_writer: string },
+        ) {
+        console.log(`댓글 추가`);
+        return this.shareService.postComment(postId, commentInfo);
+    }   
 }

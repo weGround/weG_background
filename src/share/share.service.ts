@@ -30,4 +30,17 @@ export class ShareService {
   async updateShare(postId: number, shareInfo: ShareInfo) {
     return await this.shareRepository.updateShare(postId, shareInfo);
   }
+
+  async postLike(postId: number, likeUser: string): Promise<ShareInfo | null> {
+    const share = await this.getShare(postId);
+    if (!share) {
+      return null;
+    }
+    share.like_count += 1;
+    share.like_users.push(likeUser);
+    return await this.updateShare(postId, share);
+  }
+  async postComment(postId: number, commentInfo: { comment_id: number, comment_detail: string, comment_writer: string }) {
+    return await this.shareRepository.postComment(postId, commentInfo);
+  }
 }
