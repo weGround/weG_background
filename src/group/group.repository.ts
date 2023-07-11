@@ -15,6 +15,7 @@ export interface GroupRepository {
   updateGroup(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo>;
   getMems(groupname: string): Promise<string[]>;
   updateMems(groupname: string, newmember: string): Promise<GroupInfo>;
+  deleteMems(groupname: string, deletemember: string): Promise<GroupInfo>;
   updateImg(groupname: string, groupimg: string): Promise<GroupInfo>;
   updateInfo(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo>;
 }
@@ -75,6 +76,22 @@ export class GroupFileRepository implements GroupRepository {
     }
   }
 
+  async deleteMems(groupname: string, deletemember: string): Promise<GroupInfo> {
+    const groups = await this.getAllGroups();
+    const group = groups.find((group) => group.groupname === groupname);
+    if (group) {
+      const index = group.groupmembers.indexOf(deletemember);
+      if (index !== -1) {
+        group.groupmembers.splice(index, 1);
+        await writeFile(this.FILE_NAME, JSON.stringify(groups));
+        return group;
+      } else {
+        throw new Error('Member not found in the group');
+      }
+    } else {
+      throw new Error('Group not found');
+    }
+  }
 
   async getImg(groupname: string): Promise<string> {
     const groups = await this.getAllGroups();
@@ -145,6 +162,22 @@ export class GroupMongoRepository implements GroupRepository {
       throw new Error('Group not found');
     }
   }
+
+  async deleteMems(groupname: string, deletemember: string): Promise<GroupInfo> {
+    const group = await this.groupModel.findOne({ groupname }).exec();
+    if (group) {
+      const index = group.groupmembers.indexOf(deletemember);
+      if (index !== -1) {
+        group.groupmembers.splice(index, 1);
+        return await group.save();
+      } else {
+        throw new Error('Member not found in the group');
+      }
+    } else {
+      throw new Error('Group not found');
+    }
+  }
+
   
   async getImg(groupname: string): Promise<string> {
     const group = await this.groupModel.findOne({ groupname }).exec();

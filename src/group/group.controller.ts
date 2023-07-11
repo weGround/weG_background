@@ -54,6 +54,12 @@ export class GroupController {
       return this.groupService.updateMems(groupname, newmember);
     }
 
+    @Delete('/deleteMems/:groupname')
+    deleteMems(@Param('groupname') groupname:string, @Body('deletemember') deletemember: string) {
+      console.log(`그룹 멤버 삭제`);
+      return this.groupService.deleteMems(groupname, deletemember);
+    }
+
     @Get('/getImg/:groupname')
     async getImg(@Param('groupname') groupname: string) {
       console.log(`그룹 이미지 가져오기`);

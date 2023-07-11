@@ -64,3 +64,11 @@ Content-Type: application/json
   "groupimg": "새로운 이미지URL",
   "groupmembers": ["멤버1", "멤버2", "멤버3"]
 }
+
+###
+DELETE {{server}}/group/deleteMems/2분반
+Content-Type: application/json
+
+{
+  "deletemember": "멤버2"
+}
