@@ -74,7 +74,13 @@ export class SignupController {
       return this.signupService.exitGroup(userid, groupname);
     }
 
-
+    @Get('/getUserMyGroupLists/:userid')
+    async getUserMyGroupLists(
+      @Param('userid') userid: string
+    ) {
+      console.log(`그룹들 가져오기`);
+      return this.signupService.getUserMyGroupLists(userid);
+  }
 
     @Get('/getUserMyGroupProfiles/:userid/:groupname')
     async getUserMyGroupProfiles(

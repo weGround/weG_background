@@ -1,4 +1,4 @@
-@server = http://172.10.5.127:443
+@server = http://172.10.5.148:443
 
 Get {{server}}/signup
 
@@ -8,16 +8,24 @@ Content-Type: application/json
 
 
 {
-    "userid" : "user2",
-    "pw" : "test23pw1"
-}
+    "mygroup": ["Section 1"],
+    "userid": "abc",
+    "pw": "123456",
+    "mygroup_myprofile": [{
+      "mygroupname": "Section 1",
+      "mygroup_img": ""}]
+  }
 
 ###
 GET {{server}}/signup/getUser/test2
 
+###
+GET {{server}}/signup/getUserMyGroupLists/abc
+
+
 
 ###
-DELETE {{server}}/signup/delete/sdfsdfsasssssss
+DELETE {{server}}/signup/delete/OHJH
 
 ###
 PUT {{server}}/signup/update/64abae7c461f2e2edcbce488
@@ -51,18 +59,14 @@ Content-Type: application/json
 
 
 ### Get User Group Profile
-GET {{server}}/signup/getUserMyGroupProfiles/user1/group5
+GET {{server}}/signup/getUserMyGroupProfiles/OHJH/Section 1
 Content-Type: application/json
 
 
 ###
-PUT {{server}}/signup/editUserMyGroupProfiles/user1/group5
+PUT {{server}}/signup/editUserMyGroupProfiles/OHJHas/Section 1
 Content-Type: application/json
 
 {
-  "userid": "user1",
-  "groupname": "group5",
-  "mygroup_nickname": "example-mygroup_nickname",
-  "mygroup_img": "example-mygroup_img",
-  "mygroup_detail": "example-mygroup_detail"
+  "mygroup_nickname": "asdf"
 }

@@ -94,6 +94,10 @@ export class SignupService {
       return this.signupRepository.getUserMyGroupProfiles(userid, groupname);
     }
 
+    async getUserMyGroupLists(userid: string): Promise<string[]> {
+      return this.signupRepository.getUserMyGroupLists(userid);
+    }
+    
     async editUserMyGroupProfiles(
       userid: string,
       groupname: string,

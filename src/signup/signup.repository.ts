@@ -237,6 +237,17 @@ export class SignupMongoRepository implements SignupRepository {
     return null; // 사용자 또는 그룹 프로필을 찾을 수 없음
   }
 
+  async getUserMyGroupLists(userid: string): Promise<string[]> {
+    const user = await this.getUser(userid);
+    if (user) {
+      const groupList = user.mygroup;
+      return groupList;
+    }
+
+    return null;
+  }
+
+  
   async editUserMyGroupProfiles(
     userid: string,
     groupname: string,
