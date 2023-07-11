@@ -57,5 +57,22 @@ export class SignupService {
         .exec();
     }
 
+    async exitGroup(userid: string, groupname: string) {
+      const user = await this.getUser(userid);
+      if (!user) {
+        console.log('사용자를 찾을 수 없음');
+        return null;
+      }
+    
+      const index = user.mygroup.indexOf(groupname);
+      if (index === -1) {
+        console.log('가입되어 있지 않음');
+        return '가입 안됨';
+      }
+    
+      user.mygroup.splice(index, 1);
+      return await this.updateUser(userid, user);
+    }
+
 
 }

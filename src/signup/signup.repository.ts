@@ -72,6 +72,17 @@ export class SignupFileRepository implements SignupRepository {
           throw new Error('User not found');
         }
       }
+      async existGroup(userid: string, groupname: string): Promise<UserInfo> {
+        const users = await this.getAllUsers();
+        const user = users.find((user) => user.userid === userid);
+        if (user) {
+          const index = user.mygroup.indexOf(groupname);
+          if (index !== -1) {
+            return user;
+          }
+        }
+        throw new Error('User not found or not in the group');
+      }
 }
 
 @Injectable()
@@ -117,6 +128,18 @@ export class SignupMongoRepository implements SignupRepository {
           { mygroup: user.mygroup },
           { new: true },
         ).exec();
+      }
+
+      async existGroup(userid: string, groupname: string): Promise<UserInfo> {
+        const user = await this.getUser(userid);
+        if (!user) {
+          throw new Error('User not found');
+        }
+        const index = user.mygroup.indexOf(groupname);
+        if (index !== -1) {
+          return user;
+        }
+        throw new Error('User not found or not in the group');
       }
 
 

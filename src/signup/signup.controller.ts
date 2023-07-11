@@ -68,7 +68,11 @@ export class SignupController {
       return this.signupService.joinGroup(userid, groupname);
     }
   
-
+    @Delete('/exitGroup/:userid/:groupname')
+    exitGroup(@Param('userid') userid: string, @Param('groupname') groupname: string) {
+      console.log('그룹 탈퇴');
+      return this.signupService.exitGroup(userid, groupname);
+    }
 
 
 }

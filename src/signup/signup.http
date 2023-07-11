@@ -42,5 +42,10 @@ PUT {{server}}/signup/joinGroup/test1
 Content-Type: application/json
 
 {
-  "groupname": "{group1}"
+  "groupname": "group2"
 }
+
+###
+DELETE {{server}}/signup/exitGroup/test1/group2
+Content-Type: application/json
+
