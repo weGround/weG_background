@@ -1,0 +1,68 @@
+@server = http://172.10.5.127:443
+
+Get {{server}}/group
+
+###
+POST {{server}}/group
+Content-Type: application/json
+
+
+{
+    "groupname" : "3분반",
+    "groupinfo" : "그불급룹ㄹ",
+    "groupimg" : "sadfalskjdflasdjfklasdj",
+    "groupmembers" : [
+        "a", "b", "강호동"
+    ]
+}
+
+###
+GET {{server}}/group/getGroup/hgrhrhuy
+
+
+###
+DELETE {{server}}/group/delete/sdfsdfsasssssss
+
+###
+PUT {{server}}/group/update/2분반
+Content-Type: application/json
+
+{
+    "groupname" : "2분반",
+    "groupinfo" : "2분반이좋아요",
+    "groupimg" : "sadfalskjdflasdjfklasdj",
+    "groupmembers" : [
+        "엄복동", "김복동", "김제동"
+    ]
+}
+
+###
+GET {{server}}/group/getMems/2분반
+
+
+### Update Group Members ###
+PUT {{server}}/group/updateMems/2분반
+Content-Type: application/json
+
+{
+  "groupmembers": ["멤버1", "멤버2", "멤버3"]
+}
+
+### Update Group Image ###
+PUT {{server}}/group/updateImg/2분반
+Content-Type: application/json
+
+{
+  "groupimg": "이미지URL"
+}
+
+### Update Group Info ###
+PUT {{server}}/group/updateInfo/2분반
+Content-Type: application/json
+
+{
+  "groupname": "새로운 그룹이름",
+  "groupinfo": "새로운 그룹 정보",
+  "groupimg": "새로운 이미지URL",
+  "groupmembers": ["멤버1", "멤버2", "멤버3"]
+}

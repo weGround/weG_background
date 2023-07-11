@@ -12,11 +12,6 @@ export class SignupController {
         return this.signupSrevice.getAllUsers();
     }
 
-    // @Post() 
-    // createUser(@Body() userInfo){
-    //     console.log('유저 회원가입');
-    //     this.signupSrevice.createUser(userInfo);
-    // } 
     @Post()
     async createUser(@Body() userInfo, @Response() res) {
       console.log('유저 회원가입');

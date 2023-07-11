@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { UserInfo } from './signup.model';
+import { userInfo } from 'os';
 import { Model} from 'mongoose';
 import {SignupMongoRepository } from './signup.repository';
-import { InjectModel } from '@nestjs/mongoose';
-import { userInfo } from 'os';
 
 
 @Injectable()
@@ -14,15 +14,10 @@ export class SignupService {
         return await this.signupRepository.getAllUsers();
     }
 
-    // async createUser(userInfo: UserInfo) {
-    //     const existingUser = await this.signupModel.findOne({ userid: userInfo.userid }).exec();
-    //     if (existingUser) {
-    //         throw new BadRequestException('이미 존재하는 사용자입니다.');
-    //     }
-    //     return this.signupModel.create(userInfo);
-    // }
+
     async createUser(userInfo: UserInfo) {
-        const existingUser = await this.signupModel.findOne({ userid: userInfo.userid }).exec();
+        const existingUser = await this.signupModel
+        .findOne({ userid: userInfo.userid }).exec();
         if (existingUser) {
           return 'already exist';
         }
