@@ -42,11 +42,9 @@ GET {{server}}/group/getMems/2분반
 
 ### Update Group Members ###
 PUT {{server}}/group/updateMems/2분반
-Content-Type: application/json
+Content-Type: application/x-www-form-urlencoded
 
-{
-  "groupmembers": ["멤버1", "멤버2", "멤버3"]
-}
+newmember=useruseruser
 
 ### Update Group Image ###
 PUT {{server}}/group/updateImg/2분반

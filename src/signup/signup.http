@@ -8,7 +8,7 @@ Content-Type: application/json
 
 
 {
-    "userid" : "test1",
+    "userid" : "test2",
     "pw" : "test23pw1"
 }
 
@@ -35,4 +35,27 @@ Content-Type: application/json
 {
     "userid": "abc",
     "pw" : "sd"
+}
+
+### Join Group
+POST {{server}}/signup/joinGroup/test1
+Content-Type: application/json
+
+{
+  "userid": "test1",
+  "groupId": "your-groupId"
+}
+
+### Get Mygroup
+GET {{server}}/signup/getMygroup/your-userid
+
+### MyGroup Profile !!! 이거안됨!!! 
+PUT {{server}}/signup/myGroupProfile/your-groupId
+Content-Type: application/json
+
+{
+  "mygroupname": "your-groupId",
+  "mygroup_nickname": "Your Group",
+  "mygroup_img": "group-image.jpg",
+  "mygroup_detail": "Description of your group"
 }

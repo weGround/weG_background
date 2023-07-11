@@ -49,9 +49,9 @@ export class GroupController {
     }
     
     @Put('/updateMems/:groupname')
-    updateMems(@Param('groupname') groupname:string, @Body('groupmembers') groupmembers: string[]) {
-        console.log(`그룹 멤버 수정`);
-        return this.groupService.updateMems(groupname, groupmembers);
+    updateMems(@Param('groupname') groupname: string, @Body('newmember') newmember: string) {
+      console.log(`그룹 멤버 수정`);
+      return this.groupService.updateMems(groupname, newmember);
     }
 
     @Get('/getImg/:groupname')

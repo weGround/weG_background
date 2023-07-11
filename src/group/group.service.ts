@@ -40,12 +40,21 @@ export class GroupService {
       return group ? group.groupmembers : [];
     }
 
-    async updateMems(groupname: string, groupmembers: string[]): Promise<GroupInfo | null> {
-      return this.groupModel.findOneAndUpdate(
-          { groupname },
-          { groupmembers },
-          { new: true }
-      ).exec();
+  //   async updateMems(groupname: string, groupmembers: string[]): Promise<GroupInfo | null> {
+  //     return this.groupModel.findOneAndUpdate(
+  //         { groupname },
+  //         { groupmembers },
+  //         { new: true }
+  //     ).exec();
+  // }
+  async updateMems(groupname: string, newmember: string): Promise<GroupInfo> {
+    const group = await this.groupModel.findOne({ groupname }).exec();
+    if (group) {
+      group.groupmembers.push(newmember);
+      return await group.save();
+    } else {
+      throw new Error('Group not found');
+    }
   }
 
   async getImg(groupname: string): Promise<string> {

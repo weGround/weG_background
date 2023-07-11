@@ -13,6 +13,8 @@ export interface SignupRepository {
     deleteUser(userid: String);
     updateUser(userid: String, userInfo: UserInfo);
     validateUser(userid: string, pw: string);
+    joinGroup(userid: string, groupId: string): Promise<SignupDocument | UserInfo>;
+    getMygroup(userid: string): Promise<string[]>
 }
 
 @Injectable()
@@ -59,6 +61,25 @@ export class SignupFileRepository implements SignupRepository {
         }
         return null;
     }
+    async joinGroup(userid: string, groupId: string): Promise<UserInfo> {
+        const users = await this.getAllUsers();
+        const user = users.find((user) => user.userid === userid);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        user.mygroup.push(groupId);
+        await writeFile(this.FILE_NAME, JSON.stringify(users));
+        return user;
+    }
+
+    async getMygroup(userid: string): Promise<string[]> {
+        const users = await this.getAllUsers();
+        const user = users.find((user) => user.userid === userid);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return user.mygroup;
+    }
 }
 
 @Injectable()
@@ -92,4 +113,37 @@ export class SignupMongoRepository implements SignupRepository {
         if(user.pw === pw) return user;
         return null;
     }
+    async joinGroup(userid: string, groupId: string): Promise<SignupDocument> {
+        const user = await this.getUser(userid);
+        if (!user) {
+          throw new Error('User not found');
+        }
+        user.mygroup.push(groupId);
+        return await this.SignupModel.findOneAndUpdate({ userid }, { mygroup: user.mygroup }, { new: true }).exec();
+      }
+    
+      async getMygroup(userid: string): Promise<string[]> {
+        const user = await this.getUser(userid);
+        if (!user) {
+          throw new Error('User not found');
+        }
+        return user.mygroup;
+      }
+    
+    //   async myGroupProfile(groupId: string, groupProfile: {
+    //     mygroupname: string;
+    //     mygroup_nickname: string;
+    //     mygroup_img: string;
+    //     mygroup_detail: string;
+    //   }): Promise<UserInfo> {
+    //     const user = await this.getUser(groupId);
+    //     if (!user) {
+    //       throw new Error('User not found');
+    //     }
+    //     user.mygroup_myprofile = {
+    //       mygroupname: groupId,
+    //       ...groupProfile,
+    //     };
+    //     return await this.SignupModel.findOneAndUpdate({ userid: groupId }, { mygroup_myprofile: user.mygroup_myprofile }, { new: true }).exec();
+    //   }
 }

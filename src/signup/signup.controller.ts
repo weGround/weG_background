@@ -4,18 +4,18 @@ import { stringify } from 'querystring';
 
 @Controller('signup')
 export class SignupController {
-    constructor(private signupSrevice: SignupService) {}
+    constructor(private signupService: SignupService) {}
 
     @Get()
     getAllUsers() {
         console.log('모든 유저 가져오기');
-        return this.signupSrevice.getAllUsers();
+        return this.signupService.getAllUsers();
     }
 
     @Post()
     async createUser(@Body() userInfo, @Response() res) {
       console.log('유저 회원가입');
-      const message = await this.signupSrevice.createUser(userInfo);
+      const message = await this.signupService.createUser(userInfo);
       
       if (typeof message === 'string') {
         return res.send({ message });
@@ -27,7 +27,7 @@ export class SignupController {
     @Get('/getUser/:userid')
     async getUser(@Param('userid') userid: string) {
         console.log(`유저찾기`);
-        const user = await this.signupSrevice.getUser(userid);
+        const user = await this.signupService.getUser(userid);
         console.log(user);
         return user;
     }
@@ -35,18 +35,18 @@ export class SignupController {
     @Put('/update/:userid')
     updateUser(@Param('userid') userid:string, @Body() userInfo) {
         console.log(`유저 정보 수정`);
-        return this.signupSrevice.updateUser(userid, userInfo);
+        return this.signupService.updateUser(userid, userInfo);
     }
 
     @Delete('/delete/:userid')
     deleteUser(@Param('userid') userid:string) {
         console.log('유저 삭제');
-        return this.signupSrevice.deleteUser(userid);
+        return this.signupService.deleteUser(userid);
     }
 
     @Post('login')
     async login(@Request() req, @Response() res) {
-      const userInfo = await this.signupSrevice.validateUser(req.body.userid, req.body.pw);
+      const userInfo = await this.signupService.validateUser(req.body.userid, req.body.pw);
     
       if (userInfo !== null) {
         res.cookie('login', JSON.stringify(userInfo), {
@@ -60,4 +60,31 @@ export class SignupController {
       // 유저 정보 일치하지 않는 경우의 처리
       return res.send({ message: 'login failed' });
     }
+
+
+    @Put('/joinGroup/:userid')
+    async joinGroup(@Param('userid') userid: string, @Body('groupId') groupId: string, @Response() res) {
+      console.log('Join group');
+      try {
+        await this.signupService.joinGroup(userid, groupId);
+        return res.send({ message: 'Joined group successfully' });
+      } catch (error) {
+        return res.send({ message: error.message });
+      }
+    }
+  
+    @Get('/getMygroup/:userid')
+    async getMygroup(@Param('userid') userid: string) {
+      console.log('Get user groups');
+      try {
+        const mygroup = await this.signupService.getMygroup(userid);
+        return { mygroup };
+      } catch (error) {
+        return { error: error.message };
+      }
+    }
+  
+
+
+
 }

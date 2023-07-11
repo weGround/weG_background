@@ -46,4 +46,41 @@ export class SignupService {
         console.log('비번틀림');
         return null;
     }
+
+
+
+
+    async joinGroup(userid: string, groupId: string) {
+        const user = await this.getUser(userid);
+        if (!user) {
+          throw new Error('User not found');
+        }
+        user.mygroup.push(groupId);
+        return this.updateUser(userid, user);
+      }
+    
+      async getMygroup(userid: string) {
+        const user = await this.getUser(userid);
+        if (!user) {
+          throw new Error('User not found');
+        }
+        return user.mygroup;
+      }
+    
+    //   async myGroupProfile(groupId: string, groupProfile: {
+    //     mygroupname: string;
+    //     mygroup_nickname: string;
+    //     mygroup_img: string;
+    //     mygroup_detail: string;
+    //   }) {
+    //     const user = await this.signupRepository.getUser(groupId);
+    //     if (!user) {
+    //       throw new Error('User not found');
+    //     }
+    //     user.mygroup_myprofile = {
+    //       mygroupname: groupId,
+    //       ...groupProfile,
+    //     };
+    //     return this.signupRepository.updateUser(groupId, user);
+    //   }
 }
