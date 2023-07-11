@@ -52,11 +52,18 @@ export class SignupService {
         throw new Error('User not found');
       }
       user.mygroup.push(groupname);
+      user.mygroup_myprofile.push({
+        mygroupname: groupname,
+        mygroup_nickname: '',
+        mygroup_img: '',
+        mygroup_detail: '',
+      });
+    
       return await this.signupModel
-        .findOneAndUpdate({ userid }, { mygroup: user.mygroup }, { new: true })
+        .findOneAndUpdate({ userid }, { mygroup: user.mygroup, mygroup_myprofile: user.mygroup_myprofile }, { new: true })
         .exec();
     }
-
+    
     async exitGroup(userid: string, groupname: string) {
       const user = await this.getUser(userid);
       if (!user) {
@@ -70,9 +77,18 @@ export class SignupService {
         return '가입 안됨';
       }
     
+      // mygroup_myprofile 배열에서 원소 제거
+      user.mygroup_myprofile = user.mygroup_myprofile.filter(
+        (profile) => profile.mygroupname !== groupname
+      );
+    
+      // mygroup 배열에서 원소 제거
       user.mygroup.splice(index, 1);
-      return await this.updateUser(userid, user);
+      return await this.signupModel
+        .findOneAndUpdate({ userid }, { mygroup: user.mygroup, mygroup_myprofile: user.mygroup_myprofile }, { new: true })
+        .exec();
     }
+    
 
     async getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null> {
       return this.signupRepository.getUserMyGroupProfiles(userid, groupname);

@@ -14,6 +14,7 @@ export interface SignupRepository {
     updateUser(userid: String, userInfo: UserInfo);
     validateUser(userid: string, pw: string);
     joinGroup(userid: string, groupname: string): Promise<UserInfo>;
+    exitGroup(userid: string, groupname: string): Promise<UserInfo>;
     getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null>
 }
 
@@ -67,18 +68,27 @@ export class SignupFileRepository implements SignupRepository {
       const user = users.find((user) => user.userid === userid);
       if (user) {
         user.mygroup.push(groupname);
+        user.mygroup_myprofile.push({
+          mygroupname: groupname,
+          mygroup_nickname: '',
+          mygroup_img: '',
+          mygroup_detail: '',
+        });
         await writeFile(this.FILE_NAME, JSON.stringify(users));
         return user;
       } else {
         throw new Error('User not found');
       }
     }
-  async existGroup(userid: string, groupname: string): Promise<UserInfo> {
+  async exitGroup(userid: string, groupname: string): Promise<UserInfo> {
     const users = await this.getAllUsers();
     const user = users.find((user) => user.userid === userid);
     if (user) {
       const index = user.mygroup.indexOf(groupname);
       if (index !== -1) {
+        user.mygroup_myprofile = user.mygroup_myprofile.filter(
+          (profile) => profile.mygroupname !== groupname
+        );
         return user;
       }
     }
@@ -136,30 +146,43 @@ export class SignupMongoRepository implements SignupRepository {
     }
 
     async joinGroup(userid: string, groupname: string): Promise<UserInfo> {
-        const user = await this.getUser(userid);
-        if (!user) {
-          throw new Error('User not found');
-        }
-        user.mygroup.push(groupname);
-        return await this.SignupModel.findOneAndUpdate(
-          { userid },
-          { mygroup: user.mygroup },
-          { new: true },
-        ).exec();
+      const user = await this.getUser(userid);
+      if (!user) {
+        throw new Error('User not found');
       }
-
-      async existGroup(userid: string, groupname: string): Promise<UserInfo> {
-        const user = await this.getUser(userid);
-        if (!user) {
-          throw new Error('User not found');
-        }
-        const index = user.mygroup.indexOf(groupname);
-        if (index !== -1) {
-          return user;
-        }
-        throw new Error('User not found or not in the group');
+      const groupIndex = user.mygroup_myprofile.findIndex(
+        (group) => group.mygroupname === groupname,
+      );
+      if (groupIndex !== -1) {
+        throw new Error('User is already a member of the group');
       }
-
+      user.mygroup_myprofile.push({ mygroupname: groupname, mygroup_nickname: '', mygroup_img: '', mygroup_detail: '' });
+      return await this.SignupModel.findOneAndUpdate(
+        { userid },
+        { mygroup_myprofile: user.mygroup_myprofile },
+        { new: true },
+      ).exec();
+    }
+    
+    async exitGroup(userid: string, groupname: string): Promise<UserInfo> {
+      const user = await this.getUser(userid);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      const groupIndex = user.mygroup_myprofile.findIndex(
+        (group) => group.mygroupname === groupname,
+      );
+      if (groupIndex === -1) {
+        throw new Error('User is not a member of the group');
+      }
+      user.mygroup_myprofile.splice(groupIndex, 1);
+      return await this.SignupModel.findOneAndUpdate(
+        { userid },
+        { mygroup_myprofile: user.mygroup_myprofile },
+        { new: true },
+      ).exec();
+    }
+    
       async getUserMyGroupProfiles(userid: string, groupname: string): Promise<MyGroupProfile | null> {
         const user = await this.getUser(userid);
         if (user) {
@@ -175,4 +198,5 @@ export class SignupMongoRepository implements SignupRepository {
     
         return null; // 사용자 또는 그룹 프로필을 찾을 수 없음
       }
+      
 }

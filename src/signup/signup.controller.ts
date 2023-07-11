@@ -1,5 +1,6 @@
 import { Controller, Body, Get, Post, Param, Put, Delete, Request, Response } from '@nestjs/common';
 import { SignupService } from './signup.service';
+import { UserInfo } from './signup.model';
 import { stringify } from 'querystring';
 
 @Controller('signup')
@@ -62,9 +63,8 @@ export class SignupController {
     }
 
 
-    @Put('/joinGroup/:userid')
-    async joinGroup(@Param('userid') userid: string, @Body('groupname') groupname: string) {
-      console.log(`그룹에 유저 추가`);
+    @Post('/joinGroup/:userid')
+    joinGroup(@Param('userid') userid: string, @Body('groupname') groupname: string): Promise<UserInfo> {
       return this.signupService.joinGroup(userid, groupname);
     }
   

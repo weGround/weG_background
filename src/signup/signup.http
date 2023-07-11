@@ -38,15 +38,15 @@ Content-Type: application/json
 }
 ###
 
-PUT {{server}}/signup/joinGroup/test1
+Post {{server}}/signup/joinGroup/test1
 Content-Type: application/json
 
 {
-  "groupname": "group2"
+  "groupname": "group5"
 }
 
 ###
-DELETE {{server}}/signup/exitGroup/test1/group2
+DELETE {{server}}/signup/exitGroup/test1/group5
 Content-Type: application/json
 
 
