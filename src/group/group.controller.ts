@@ -50,7 +50,7 @@ export class GroupController {
     
     @Put('/updateMems/:groupname')
     updateMems(@Param('groupname') groupname: string, @Body('newmember') newmember: string) {
-      console.log(`그룹 멤버 수정`);
+      console.log(`그룹 멤버 추가`);
       return this.groupService.updateMems(groupname, newmember);
     }
 
