@@ -42,6 +42,12 @@ export class GroupController {
         console.log('그룹 삭제');
         return this.groupService.deleteGroup(groupname);
     }   
+    @Get('/getMems/:groupname')
+    async getMems(@Param('groupname') groupname: string) {
+      console.log(`그룹 멤버 가져오기`);
+      return this.groupService.getMems(groupname);
+    }
+    
 
 
 }

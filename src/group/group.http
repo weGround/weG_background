@@ -8,11 +8,11 @@ Content-Type: application/json
 
 
 {
-    "groupname" : "2분반",
-    "groupinfo" : "2분반이좋아요",
+    "groupname" : "3분반",
+    "groupinfo" : "그불급룹ㄹ",
     "groupimg" : "sadfalskjdflasdjfklasdj",
     "groupmembers" : [
-        "김병만", "유재석", "강호동"
+        "a", "b", "강호동"
     ]
 }
 
@@ -36,3 +36,5 @@ Content-Type: application/json
     ]
 }
 
+###
+GET {{server}}/group/getMems/2분반

@@ -21,6 +21,7 @@ import { Share, ShareSchema } from './share/share.schema';
 import { ShareService } from './share/share.service';
 import { ShareController } from './share/share.controller';
 
+
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://localhost:27017/blog'),
@@ -31,6 +32,8 @@ import { ShareController } from './share/share.controller';
     MongooseModule.forFeature([{ name: Group.name, schema: GroupSchema }]),
     MongooseModule.forRoot('mongodb://localhost:27017/share'),
     MongooseModule.forFeature([{ name: Share.name, schema: ShareSchema }]),
+    // MongooseModule.forRoot('mongodb://localhost:27017/login'),
+
     GroupModule,
     ShareModule,
      // Signup 컬렉션을 등록
@@ -40,6 +43,7 @@ import { ShareController } from './share/share.controller';
     BlogService, BlogFileRepository, BlogMongoRepository, 
     SignupService, SignupFileRepository, SignupMongoRepository, 
     GroupService, GroupFileRepository, GroupMongoRepository,
-    ShareService, ShareFileRepository, ShareMongoRepository, ], // Signup 리포지토리를 추가
+    ShareService, ShareFileRepository, ShareMongoRepository, 
+     ], // Signup 리포지토리를 추가
 })
 export class AppModule {}

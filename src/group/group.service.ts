@@ -14,27 +14,33 @@ export class GroupService {
     }
 
     async createGroup(groupInfo: GroupInfo): Promise<string> {
-        const existingGroup = await this.groupModel
-          .findOne({ groupname: groupInfo.groupname })
-          .exec();
-        if (existingGroup) {
-          return 'Group already exists';
-        }
-        await this.groupModel.create(groupInfo);
-        return 'Group created successfully';
+      const existingGroup = await this.groupModel
+        .findOne({ groupname: groupInfo.groupname })
+        .exec();
+      if (existingGroup) {
+        return 'Group already exists';
       }
+      await this.groupModel.create(groupInfo);
+      return 'Group created successfully';
+    }
     
-      async getGroup(groupname: string): Promise<GroupInfo | null> {
-        return this.groupModel.findOne({ groupname }).exec();
-      }
+    async getGroup(groupname: string): Promise<GroupInfo | null> {
+      return this.groupModel.findOne({ groupname }).exec();
+    }
     
-      async updateGroup(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo | null> {
-        return this.groupModel.findOneAndUpdate({ groupname }, groupInfo, { new: true }).exec();
-      }
+    async updateGroup(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo | null> {
+      return this.groupModel.findOneAndUpdate({ groupname }, groupInfo, { new: true }).exec();
+    }
     
-      async deleteGroup(groupname: string): Promise<GroupInfo | null> {
-        return this.groupModel.findOneAndDelete({ groupname }).exec();
-      }
+    async deleteGroup(groupname: string): Promise<GroupInfo | null> {
+      return this.groupModel.findOneAndDelete({ groupname }).exec();
+    }
+    async getMems(groupname: string): Promise<string[]> {
+      const group = await this.getGroup(groupname);
+      return group ? group.groupmembers : [];
+    }
+    
+    
 }
 
 

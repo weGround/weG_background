@@ -4,6 +4,7 @@ import { GroupInfo } from './group.model';
 import {readFile, writeFile } from 'fs/promises';
 import { Injectable } from '@nestjs/common';
 import { Group, GroupDocument } from './group.schema';
+import { write } from 'fs';
 
 
 export interface GroupRepository {
@@ -12,6 +13,7 @@ export interface GroupRepository {
   getGroup(groupname: string): Promise<GroupInfo | null>;
   deleteGroup(groupname: string): Promise<void>;
   updateGroup(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo>;
+  getMems(groupname: string): Promise<string[]>;
 }
 
 
@@ -19,7 +21,7 @@ export interface GroupRepository {
 export class GroupFileRepository implements GroupRepository {
   FILE_NAME = '/root/madcamp_back/weG_background/src/group/groupinfo.data.json';
 
-  async getAllGroups(): Promise<GroupInfo[]> {
+  async getAllGroups(): Promise<GroupInfo []> {
     const datas = await readFile(this.FILE_NAME, 'utf8');
     const groups = JSON.parse(datas);
     return groups;
@@ -51,6 +53,12 @@ export class GroupFileRepository implements GroupRepository {
     await writeFile(this.FILE_NAME, JSON.stringify(groups));
     return groupInfo;
   }
+  async getMems(groupname: string): Promise<string[]> {
+    const groups = await this.getAllGroups();
+    const group = groups.find((group) => group.groupname === groupname);
+    return group ? group.groupmembers : [];
+  }
+
 }
 
 @Injectable()
@@ -75,5 +83,9 @@ export class GroupMongoRepository implements GroupRepository {
 
   async updateGroup(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo> {
     return await this.groupModel.findOneAndUpdate({ groupname }, groupInfo, { new: true }).exec();
+  }
+  async getMems(groupname: string): Promise<string[]> {
+    const group = await this.groupModel.findOne({ groupname }).exec();
+    return group ? group.groupmembers : [];
   }
 }
