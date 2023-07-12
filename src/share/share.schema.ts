@@ -6,9 +6,6 @@ export type ShareDocument = Share & Document;
 
 @Schema()
 export class Share {
-    @Prop({ required: true, unique: true })
-    post_id: number;
-
     @Prop()
     post_group: string;
     

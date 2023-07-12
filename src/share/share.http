@@ -11,39 +11,28 @@ Content-Type: application/json
 
 
 {
-"post_id": 234234,
-    "post_title": "First Post",
-    "post_group": "group1",
-    "post_detail": "This is the first post",
+    "post_title": "third Post",
+    "post_group": "group2",
+    "post_detail": "blahblah",
     "post_img": "image1.jpg",
     "post_writer": "John Doe",
     "like_count": 10,
     "like_users": ["user1", "user2", "user3"],
     "comments": [
-      {
-        "comment_id": 1,
-        "comment_detail": "Great post!",
-        "comment_writer": "Alice"
-      },
-      {
-        "comment_id": 2,
-        "comment_detail": "Nice job!",
-        "comment_writer": "Bob"
-      }
     ]
 
 }
 
 ###
-GET {{server}}/share/getPost/
+GET {{server}}/share/getPost/64ae14a6ef30de34d9f57eb0
 
 
 ###
-DELETE {{server}}/share/delete/234234
+DELETE {{server}}/share/delete/64ae14a6ef30de34d9f57eb0
 
 ###
 
-PUT {{server}}/share/postLike/1
+PUT {{server}}/share/postLike/64ae14bcef30de34d9f57ec0
 Content-Type: application/json
 
 {

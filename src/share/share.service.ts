@@ -24,21 +24,21 @@ export class ShareService {
     return createdShare;
   }
 
-  async getShare(postId: number) {
-    return await this.shareRepository.getShare(postId);
+  async getShare(_id: string) {
+    return await this.shareRepository.getShare(_id);
   }
 
-  async deleteShare(postId: number) {
-    return await this.shareRepository.deleteShare(postId);
+  async deleteShare(_id: string) {
+    return await this.shareRepository.deleteShare(_id);
   }
 
-  async updateShare(postId: number, shareInfo: ShareInfo) {
-    return await this.shareRepository.updateShare(postId, shareInfo);
+  async updateShare(_id: string, shareInfo: ShareInfo) {
+    return await this.shareRepository.updateShare(_id, shareInfo);
   }
 
 
-  async postLike(postId: number, likeUser: string): Promise<ShareInfo | null> {
-    const share = await this.getShare(postId);
+  async postLike(_id: string, likeUser: string): Promise<ShareInfo | null> {
+    const share = await this.getShare(_id);
     if (!share) {
       return null;
     }
@@ -52,10 +52,47 @@ export class ShareService {
       share.like_users.push(likeUser);
     }
   
-    return await this.updateShare(postId, share);
+    return await this.updateShare(_id, share);
   }
-  async postComment(postId: number, commentInfo: { comment_id: number, comment_detail: string, comment_writer: string }) {
-    return await this.shareRepository.postComment(postId, commentInfo);
+
+
+  
+  async postComment(_id: string, commentInfo: { comment_id: number, comment_detail: string, comment_writer: string }) {
+    return await this.shareRepository.postComment(_id, commentInfo);
   }
+
+  // async getShare(postId: number) {
+  //   return await this.shareRepository.getShare(postId);
+  // }
+
+  // async deleteShare(postId: number) {
+  //   return await this.shareRepository.deleteShare(postId);
+  // }
+
+  // async updateShare(postId: number, shareInfo: ShareInfo) {
+  //   return await this.shareRepository.updateShare(postId, shareInfo);
+  // }
+
+
+  // async postLike(postId: number, likeUser: string): Promise<ShareInfo | null> {
+  //   const share = await this.getShare(postId);
+  //   if (!share) {
+  //     return null;
+  //   }
+  
+  //   const userIndex = share.like_users.findIndex((user) => user === likeUser);
+  //   if (userIndex !== -1) {
+  //     share.like_count -= 1;
+  //     share.like_users.splice(userIndex, 1);
+  //   } else {
+  //     share.like_count += 1;
+  //     share.like_users.push(likeUser);
+  //   }
+  
+  //   return await this.updateShare(postId, share);
+  // }
+  // async postComment(postId: number, commentInfo: { comment_id: number, comment_detail: string, comment_writer: string }) {
+  //   return await this.shareRepository.postComment(postId, commentInfo);
+  // }
 
 }
