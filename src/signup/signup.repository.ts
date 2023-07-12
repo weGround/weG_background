@@ -77,9 +77,9 @@ export class SignupFileRepository implements SignupRepository {
         user.mygroup.push(groupname);
         user.mygroup_myprofile.push({
           mygroupname: groupname,
-          mygroup_nickname: '',
+          mygroup_nickname: userid,
           mygroup_img: '',
-          mygroup_detail: '',
+          mygroup_detail: userid,
         });
         await writeFile(this.FILE_NAME, JSON.stringify(users));
         return user;
