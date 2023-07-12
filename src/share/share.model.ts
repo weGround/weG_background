@@ -1,5 +1,6 @@
 export interface ShareInfo {
-    post_id: number;
+    _id?:string;
+    post_group: string;
     post_title: string;
     post_detail: string;
     post_img: string;
@@ -7,7 +8,7 @@ export interface ShareInfo {
     like_count: number;
     like_users: string[];
     comments: {
-      comment_id: number;
+      _id: string;
       comment_detail: string;
       comment_writer: string;
     }[];

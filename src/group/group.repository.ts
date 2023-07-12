@@ -14,9 +14,12 @@ export interface GroupRepository {
   deleteGroup(groupname: string): Promise<void>;
   updateGroup(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo>;
   getMems(groupname: string): Promise<string[]>;
-  updateMems(groupname: string, groupmembers: string[]): Promise<GroupInfo>;
+  updateMems(groupname: string, newmember: string): Promise<GroupInfo>;
+  deleteMems(groupname: string, deletemember: string): Promise<GroupInfo>;
   updateImg(groupname: string, groupimg: string): Promise<GroupInfo>;
+  getInfo(groupname: string): Promise<string> 
   updateInfo(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo>;
+  getImg(groupname: string): Promise<string>
 }
 
 
@@ -61,21 +64,47 @@ export class GroupFileRepository implements GroupRepository {
     const group = groups.find((group) => group.groupname === groupname);
     return group ? group.groupmembers : [];
   }
-  async updateMems(groupname: string, groupmembers: string[]): Promise<GroupInfo> {
+
+
+  async updateMems(groupname: string, newmember: string): Promise<GroupInfo> {
     const groups = await this.getAllGroups();
     const group = groups.find((group) => group.groupname === groupname);
     if (group) {
-      group.groupmembers = groupmembers;
+      group.groupmembers.push(newmember);
       await writeFile(this.FILE_NAME, JSON.stringify(groups));
       return group;
     } else {
       throw new Error('Group not found');
     }
   }
+
+  async deleteMems(groupname: string, deletemember: string): Promise<GroupInfo> {
+    const groups = await this.getAllGroups();
+    const group = groups.find((group) => group.groupname === groupname);
+    if (group) {
+      const index = group.groupmembers.indexOf(deletemember);
+      if (index !== -1) {
+        group.groupmembers.splice(index, 1);
+        await writeFile(this.FILE_NAME, JSON.stringify(groups));
+        return group;
+      } else {
+        throw new Error('Member not found in the group');
+      }
+    } else {
+      throw new Error('Group not found');
+    }
+  }
+
   async getImg(groupname: string): Promise<string> {
     const groups = await this.getAllGroups();
     const group = groups.find((group) => group.groupname === groupname);
     return group ? group.groupimg : '';
+  }
+
+  async getInfo(groupname: string): Promise<string> {
+    const groups = await this.getAllGroups();
+    const group = groups.find((group) => group.groupname === groupname);
+    return group ? group.groupinfo : '';
   }
 
   async updateImg(groupname: string, groupimg: string): Promise<GroupInfo> {
@@ -130,13 +159,34 @@ export class GroupMongoRepository implements GroupRepository {
     const group = await this.groupModel.findOne({ groupname }).exec();
     return group ? group.groupmembers : [];
   }
-  async updateMems(groupname: string, groupmembers: string[]): Promise<GroupInfo> {
-    return await this.groupModel.findOneAndUpdate(
-      { groupname },
-      { groupmembers },
-      { new: true }
-    ).exec();
+
+
+  async updateMems(groupname: string, newmember: string): Promise<GroupInfo> {
+    const group = await this.groupModel.findOne({ groupname }).exec();
+    if (group) {
+      group.groupmembers.push(newmember);
+      return await group.save();
+    } else {
+      throw new Error('Group not found');
+    }
   }
+
+  async deleteMems(groupname: string, deletemember: string): Promise<GroupInfo> {
+    const group = await this.groupModel.findOne({ groupname }).exec();
+    if (group) {
+      const index = group.groupmembers.indexOf(deletemember);
+      if (index !== -1) {
+        group.groupmembers.splice(index, 1);
+        return await group.save();
+      } else {
+        throw new Error('Member not found in the group');
+      }
+    } else {
+      throw new Error('Group not found');
+    }
+  }
+
+  
   async getImg(groupname: string): Promise<string> {
     const group = await this.groupModel.findOne({ groupname }).exec();
     return group ? group.groupimg : '';
@@ -148,6 +198,11 @@ export class GroupMongoRepository implements GroupRepository {
       { groupimg },
       { new: true }
     ).exec();
+  }
+
+  async getInfo(groupname: string): Promise<string> {
+    const group = await this.groupModel.findOne({ groupname }).exec();
+    return group ? group.groupinfo : '';
   }
 
   async updateInfo(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo> {

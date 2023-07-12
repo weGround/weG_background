@@ -8,11 +8,11 @@ Content-Type: application/json
 
 
 {
-    "groupname" : "3분반",
-    "groupinfo" : "그불급룹ㄹ",
-    "groupimg" : "sadfalskjdflasdjfklasdj",
+    "groupname" : "Section 3",
+    "groupinfo" : "우리는 3분반입니다!!",
+    "groupimg" : "",
     "groupmembers" : [
-        "a", "b", "강호동"
+        "JI", "OH", "KI", "EI"
     ]
 }
 
@@ -37,16 +37,21 @@ Content-Type: application/json
 }
 
 ###
-GET {{server}}/group/getMems/2분반
+GET {{server}}/group/getMems/Section 1
 
+###
+
+GET {{server}}/signup/getUserMyGroupProfiles/OHJH/Section 1
+
+
+###
+GET {{server}}/group/getInfo/2분반
 
 ### Update Group Members ###
 PUT {{server}}/group/updateMems/2분반
-Content-Type: application/json
+Content-Type: application/x-www-form-urlencoded
 
-{
-  "groupmembers": ["멤버1", "멤버2", "멤버3"]
-}
+newmember=useruseruser
 
 ### Update Group Image ###
 PUT {{server}}/group/updateImg/2분반

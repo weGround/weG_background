@@ -8,16 +8,24 @@ Content-Type: application/json
 
 
 {
-    "userid" : "test1",
-    "pw" : "test23pw1"
-}
+    "mygroup": ["Section 1"],
+    "userid": "abcd",
+    "pw": "123456",
+    "mygroup_myprofile": [{
+      "mygroupname": "Section 1",
+      "mygroup_img": "asdf"}]
+  }
 
 ###
-GET {{server}}/signup/getUser/hgrhrhuy
+GET {{server}}/signup/getUser/
+
+###
+GET {{server}}/signup/getUserMyGroupLists/abc
+
 
 
 ###
-DELETE {{server}}/signup/delete/sdfsdfsasssssss
+DELETE {{server}}/signup/delete/OHJH
 
 ###
 PUT {{server}}/signup/update/64abae7c461f2e2edcbce488
@@ -35,4 +43,30 @@ Content-Type: application/json
 {
     "userid": "abc",
     "pw" : "sd"
+}
+###
+
+Post {{server}}/signup/joinGroup/user1
+Content-Type: application/json
+
+{
+  "groupname": "group2"
+}
+
+###
+DELETE {{server}}/signup/exitGroup/test1/group5
+Content-Type: application/json
+
+
+### Get User Group Profile
+GET {{server}}/signup/getUserMyGroupProfiles/OHJH/Section 1
+Content-Type: application/json
+
+
+###
+PUT {{server}}/signup/editUserMyGroupProfiles/OHJHas/Section 1
+Content-Type: application/json
+
+{
+  "mygroup_nickname": "asdf"
 }

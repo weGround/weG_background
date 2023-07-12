@@ -1,5 +1,7 @@
 import { Controller, Body, Get, Post, Param, Put, Delete, Request, Response } from '@nestjs/common';
 import { GroupService } from './group.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadedFile } from '@nestjs/common';
 
 @Controller('group')
 export class GroupController {
@@ -49,9 +51,15 @@ export class GroupController {
     }
     
     @Put('/updateMems/:groupname')
-    updateMems(@Param('groupname') groupname:string, @Body('groupmembers') groupmembers: string[]) {
-        console.log(`그룹 멤버 수정`);
-        return this.groupService.updateMems(groupname, groupmembers);
+    updateMems(@Param('groupname') groupname: string, @Body('newmember') newmember: string) {
+      console.log(`그룹 멤버 추가`);
+      return this.groupService.updateMems(groupname, newmember);
+    }
+
+    @Delete('/deleteMems/:groupname')
+    deleteMems(@Param('groupname') groupname:string, @Body('deletemember') deletemember: string) {
+      console.log(`그룹 멤버 삭제`);
+      return this.groupService.deleteMems(groupname, deletemember);
     }
 
     @Get('/getImg/:groupname')
@@ -64,6 +72,11 @@ export class GroupController {
     updateImg(@Param('groupname') groupname:string, @Body('groupimg') groupimg: string) {
         console.log(`그룹 이미지 수정`);
         return this.groupService.updateImg(groupname, groupimg);
+    }
+    @Get('/getInfo/:groupname')
+    async getInfo(@Param('groupname') groupinfo: string) {
+      console.log(`그룹 설명 가져오기`);
+      return this.groupService.getInfo(groupinfo);
     }
 
     @Put('/updateInfo/:groupname')
