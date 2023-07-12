@@ -1,5 +1,7 @@
 import { Controller, Body, Get, Post, Param, Put, Delete, Request, Response } from '@nestjs/common';
 import { GroupService } from './group.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadedFile } from '@nestjs/common';
 
 @Controller('group')
 export class GroupController {

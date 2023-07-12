@@ -1,4 +1,4 @@
-@server = http://172.10.5.148:443
+@server = http://172.10.5.127:443
 
 Get {{server}}/signup
 
@@ -9,15 +9,15 @@ Content-Type: application/json
 
 {
     "mygroup": ["Section 1"],
-    "userid": "abc",
+    "userid": "abcd",
     "pw": "123456",
     "mygroup_myprofile": [{
       "mygroupname": "Section 1",
-      "mygroup_img": ""}]
+      "mygroup_img": "asdf"}]
   }
 
 ###
-GET {{server}}/signup/getUser/test2
+GET {{server}}/signup/getUser/
 
 ###
 GET {{server}}/signup/getUserMyGroupLists/abc

@@ -26,10 +26,13 @@ export class SignupController {
     }
 
     @Get('/getUser/:userid')
-    async getUser(@Param('userid') userid: string) {
+    async getUser(@Param('userid') userid: string, @Response() res) {
         console.log(`유저찾기`);
         const user = await this.signupService.getUser(userid);
         console.log(user);
+        if(user === null){
+          return res.send({ message: 'not exist' });
+        }
         return user;
     }
 
