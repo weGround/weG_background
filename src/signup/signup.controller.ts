@@ -33,7 +33,7 @@ export class SignupController {
         if(user === null){
           return res.send({ message: 'not exist' });
         }
-        return user;
+        return res.send(user);
     }
 
     @Put('/update/:userid')
