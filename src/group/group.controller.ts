@@ -71,6 +71,11 @@ export class GroupController {
         console.log(`그룹 이미지 수정`);
         return this.groupService.updateImg(groupname, groupimg);
     }
+    @Get('/getInfo/:groupname')
+    async getInfo(@Param('groupname') groupinfo: string) {
+      console.log(`그룹 설명 가져오기`);
+      return this.groupService.getInfo(groupinfo);
+    }
 
     @Put('/updateInfo/:groupname')
     updateInfo(@Param('groupname') groupname:string, @Body() GroupInfo) {

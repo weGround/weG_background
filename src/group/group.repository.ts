@@ -17,7 +17,9 @@ export interface GroupRepository {
   updateMems(groupname: string, newmember: string): Promise<GroupInfo>;
   deleteMems(groupname: string, deletemember: string): Promise<GroupInfo>;
   updateImg(groupname: string, groupimg: string): Promise<GroupInfo>;
+  getInfo(groupname: string): Promise<string> 
   updateInfo(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo>;
+  getImg(groupname: string): Promise<string>
 }
 
 
@@ -97,6 +99,12 @@ export class GroupFileRepository implements GroupRepository {
     const groups = await this.getAllGroups();
     const group = groups.find((group) => group.groupname === groupname);
     return group ? group.groupimg : '';
+  }
+
+  async getInfo(groupname: string): Promise<string> {
+    const groups = await this.getAllGroups();
+    const group = groups.find((group) => group.groupname === groupname);
+    return group ? group.groupinfo : '';
   }
 
   async updateImg(groupname: string, groupimg: string): Promise<GroupInfo> {
@@ -190,6 +198,11 @@ export class GroupMongoRepository implements GroupRepository {
       { groupimg },
       { new: true }
     ).exec();
+  }
+
+  async getInfo(groupname: string): Promise<string> {
+    const group = await this.groupModel.findOne({ groupname }).exec();
+    return group ? group.groupinfo : '';
   }
 
   async updateInfo(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo> {

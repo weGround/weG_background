@@ -75,6 +75,11 @@ export class GroupService {
           { new: true }
       ).exec();
   }
+  
+  async getInfo(groupname: string): Promise<string> {
+    const group = await this.getGroup(groupname);
+    return group ? group.groupinfo : '';
+  }
 
   async updateInfo(groupname: string, groupInfo: GroupInfo): Promise<GroupInfo | null> {
       return this.groupModel.findOneAndUpdate(
