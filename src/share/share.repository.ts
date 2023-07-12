@@ -13,6 +13,7 @@ export interface ShareRepository {
   deleteShare(postId: number): Promise<void>;
   updateShare(postId: number, shareInfo: ShareInfo): Promise<ShareInfo>;
   postComment(postId: number, commentInfo: { comment_detail: string, comment_writer: string }): Promise<ShareInfo> 
+  getAllGroupShares(groupname: string): Promise<ShareInfo[]>
 }
 
 @Injectable()
@@ -25,12 +26,12 @@ export class ShareFileRepository implements ShareRepository {
     return shares;
   }
 
-  // async createShare(shareInfo: ShareInfo): Promise<ShareInfo> {
-  //   const shares = await this.getAllShares();
-  //   shares.push(shareInfo);
-  //   await writeFile(this.FILE_NAME, JSON.stringify(shares));
-  //   return shareInfo;
-  // }
+  async getAllGroupShares(groupname: string): Promise<ShareInfo[]> {
+    const shares = await this.getAllShares();
+    const filteredShares = shares.filter((share) => share.post_group === groupname);
+    return filteredShares;
+  }
+
   async createShare(shareInfo: ShareInfo): Promise<ShareInfo> {
     const shares = await this.getAllShares();
     
@@ -92,6 +93,10 @@ export class ShareMongoRepository implements ShareRepository {
 
   async getAllShares(): Promise<ShareInfo[]> {
     return await this.shareModel.find().exec();
+  }
+  
+  async getAllGroupShares(groupname: string): Promise<ShareInfo[]> {
+    return await this.shareModel.find({ post_group: groupname }).exec();
   }
 
   async createShare(shareInfo: ShareInfo): Promise<ShareInfo> {

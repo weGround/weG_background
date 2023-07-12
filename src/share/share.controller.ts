@@ -13,17 +13,13 @@ export class ShareController {
         return this.shareService.getAllShares();
     }
 
-    // @Post()
-    // async createShare(@Body() shareInfo, @Response() res) {
-    //     console.log('공유 게시물 생성');
-    //     const message = await this.shareService.createShare(shareInfo);
-        
-    //     if (typeof message === 'string') {
-    //         return res.send({ message });
-    //     }
-        
-    //     return res.send({ message: 'share create success' });
-    // }
+    @Get('/getGroupPost/:group_name')
+    getAllGroupShares(@Param('group_name') groupName: string) {
+        console.log('그룹의 게시물 가져오기');
+        return this.shareService.getAllGroupShares(groupName);
+    }
+
+
     @Post()
     async createShare(@Body() shareInfo: ShareInfo, @Response() res ) {
       console.log('공유 게시물 생성');

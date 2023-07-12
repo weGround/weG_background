@@ -1,6 +1,9 @@
 @server = http://172.10.5.127:443
 
 Get {{server}}/share
+###
+
+Get {{server}}/share/getGroupPost/group1
 
 ###
 POST {{server}}/share
@@ -10,6 +13,7 @@ Content-Type: application/json
 {
 "post_id": 234234,
     "post_title": "First Post",
+    "post_group": "group1",
     "post_detail": "This is the first post",
     "post_img": "image1.jpg",
     "post_writer": "John Doe",
@@ -35,7 +39,7 @@ GET {{server}}/share/getPost/
 
 
 ###
-DELETE {{server}}/share/delete/
+DELETE {{server}}/share/delete/234234
 
 ###
 
