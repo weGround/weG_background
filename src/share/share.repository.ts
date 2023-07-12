@@ -5,6 +5,7 @@ import {readFile, writeFile } from 'fs/promises';
 import { Injectable } from '@nestjs/common';
 import { Share, ShareDocument } from './share.schema';
 import { v4 as uuidv4 } from 'uuid';
+import { ObjectId } from 'mongodb';
 
 export interface ShareRepository {
   getAllShares(): Promise<ShareInfo[]>;
@@ -12,7 +13,7 @@ export interface ShareRepository {
   getShare(_id: string): Promise<ShareInfo | null>;
   deleteShare(_id: string): Promise<void>;
   updateShare(_id: string, shareInfo: ShareInfo): Promise<ShareInfo>;
-  postComment(_id: string, commentInfo: { comment_detail: string, comment_writer: string }): Promise<ShareInfo> 
+  postComment(_id: string, commentInfo: { comment_detail: string, comment_writer: string }): Promise<ShareInfo>
   getAllGroupShares(groupname: string): Promise<ShareInfo[]>
 }
 
@@ -34,7 +35,6 @@ export class ShareFileRepository implements ShareRepository {
 
   async createShare(shareInfo: ShareInfo): Promise<ShareInfo> {
     const shares = await this.getAllShares();
-    
     const newShare: ShareInfo = {
       _id: uuidv4(), // UUID 형태의 랜덤한 문자열로 설정
       ...shareInfo
@@ -75,28 +75,52 @@ export class ShareFileRepository implements ShareRepository {
     await writeFile(this.FILE_NAME, JSON.stringify(shares));
     return share;
   }
-  async postComment(_id: string, commentInfo: { comment_id: number,comment_detail: string, comment_writer: string }): Promise<ShareInfo> {
-    const shares = await this.getAllShares();
-    const shareIndex = shares.findIndex((share) => share._id === _id);
-    if (shareIndex === -1) {
+  async postComment(_id: string, commentInfo: { comment_detail: string, comment_writer: string }): Promise<ShareInfo> {
+    const share = await this.getShare(_id);
+    if (!share) {
       throw new Error('Share not found');
     }
-    shares[shareIndex].comments.push(commentInfo);
-    await writeFile(this.FILE_NAME, JSON.stringify(shares));
-    return shares[shareIndex];
+  
+    const newComment: { _id: string, comment_detail: string, comment_writer: string } = {
+      _id:  uuidv4(), // Generate unique comment _id
+      comment_detail: commentInfo.comment_detail,
+      comment_writer: commentInfo.comment_writer,
+    };
+  
+    share.comments.push(newComment);
+    await this.updateShare(_id, share);
+    return share;
   }
+  // async postComment(_id: string, commentInfo: { comment_id: number,comment_detail: string, comment_writer: string }): Promise<ShareInfo> {
+  //   const shares = await this.getAllShares();
+  //   const shareIndex = shares.findIndex((share) => share._id === _id);
+  //   if (shareIndex === -1) {
+  //     throw new Error('Share not found');
+  //   }
+  //   shares[shareIndex].comments.push(commentInfo);
+  //   await writeFile(this.FILE_NAME, JSON.stringify(shares));
+  //   return shares[shareIndex];
+  // }
 }
 
 @Injectable()
 export class ShareMongoRepository implements ShareRepository {
   constructor(@InjectModel(Share.name) private shareModel: Model<ShareDocument>) {}
 
+  // async getAllShares(): Promise<ShareInfo[]> {
+  //   return await this.shareModel.find().exec();
+  // }
   async getAllShares(): Promise<ShareInfo[]> {
-    return await this.shareModel.find().exec();
+    const shares = await this.shareModel.find().exec();
+    return shares.map((share) => share.toObject() as ShareInfo);
   }
   
+  // async getAllGroupShares(groupname: string): Promise<ShareInfo[]> {
+  //   return await this.shareModel.find({ post_group: groupname }).exec();
+  // }
   async getAllGroupShares(groupname: string): Promise<ShareInfo[]> {
-    return await this.shareModel.find({ post_group: groupname }).exec();
+    const shares = await this.shareModel.find({ post_group: groupname }).exec();
+    return shares.map((share) => share.toObject() as ShareInfo);
   }
 
   async createShare(shareInfo: ShareInfo): Promise<ShareInfo> {
@@ -104,16 +128,26 @@ export class ShareMongoRepository implements ShareRepository {
     return createdShare.toObject();
   }
 
+  // async getShare(_id: string): Promise<ShareInfo | null> {
+  //   return await this.shareModel.findOne({ _id }).exec();
+  // }
   async getShare(_id: string): Promise<ShareInfo | null> {
-    return await this.shareModel.findOne({ _id }).exec();
+    const share = await this.shareModel.findOne({ _id }).exec();
+    return share ? share.toObject() as ShareInfo : null;
   }
+  
 
   async deleteShare(_id: string): Promise<void> {
     await this.shareModel.findOneAndDelete({ _id }).exec();
   }
 
+  // async updateShare(_id: string, shareInfo: ShareInfo): Promise<ShareInfo> {
+  //   return await this.shareModel.findOneAndUpdate({ _id }, shareInfo, { new: true }).exec();
+  // }
+  
   async updateShare(_id: string, shareInfo: ShareInfo): Promise<ShareInfo> {
-    return await this.shareModel.findOneAndUpdate({ _id }, shareInfo, { new: true }).exec();
+    const updatedShare = await this.shareModel.findOneAndUpdate({ _id }, shareInfo, { new: true }).exec();
+    return updatedShare ? updatedShare.toObject() as ShareInfo : null;
   }
   
   async postLike(_id: string, likeUser: string): Promise<ShareInfo | null> {
@@ -131,32 +165,13 @@ export class ShareMongoRepository implements ShareRepository {
       share.like_users.push(likeUser);
     }
   
-    return await this.shareModel.findOneAndUpdate({ _id }, share, { new: true }).exec();
+    const updatedShare = await this.shareModel.findOneAndUpdate({ _id }, share, { new: true }).exec();
+    return updatedShare ? updatedShare.toObject() as ShareInfo : null;
   }
   
-  async postComment(_id: string, commentInfo: { comment_id: number, comment_detail: string, comment_writer: string }): Promise<ShareInfo> {
-    const share = await this.getShare(_id);
-    if (!share) {
-      throw new Error('Share not found');
-    }
-    share.comments.push(commentInfo);
-    await this.updateShare(_id, share);
-    return share;
-  }
-
-  // async getShare(postId: number): Promise<ShareInfo | null> {
-  //   return await this.shareModel.findOne({ post_id: postId }).exec();
-  // }
-
-  // async deleteShare(postId: number): Promise<void> {
-  //   await this.shareModel.findOneAndDelete({ post_id: postId }).exec();
-  // }
-
-  // async updateShare(postId: number, shareInfo: ShareInfo): Promise<ShareInfo> {
-  //   return await this.shareModel.findOneAndUpdate({ post_id: postId }, shareInfo, { new: true }).exec();
-  // }
-  // async postLike(postId: number, likeUser: string): Promise<ShareInfo | null> {
-  //   const share = await this.shareModel.findOne({ post_id: postId }).exec();
+  
+  // async postLike(_id: string, likeUser: string): Promise<ShareInfo | null> {
+  //   const share = await this.shareModel.findOne({ _id }).exec();
   //   if (!share) {
   //     return null;
   //   }
@@ -170,15 +185,32 @@ export class ShareMongoRepository implements ShareRepository {
   //     share.like_users.push(likeUser);
   //   }
   
-  //   return await this.shareModel.findOneAndUpdate({ post_id: postId }, share, { new: true }).exec();
+  //   return await this.shareModel.findOneAndUpdate({ _id }, share, { new: true }).exec();
   // }
-  // async postComment(postId: number, commentInfo: { comment_id: number, comment_detail: string, comment_writer: string }): Promise<ShareInfo> {
-  //   const share = await this.getShare(postId);
+  
+  // async postComment(_id: string, commentInfo: { comment_id: number, comment_detail: string, comment_writer: string }): Promise<ShareInfo> {
+  //   const share = await this.getShare(_id);
   //   if (!share) {
   //     throw new Error('Share not found');
   //   }
   //   share.comments.push(commentInfo);
-  //   await this.updateShare(postId, share);
+  //   await this.updateShare(_id, share);
   //   return share;
   // }
+  async postComment(_id: string, commentInfo: { comment_detail: string, comment_writer: string }): Promise<ShareInfo> {
+    const share = await this.getShare(_id);
+    if (!share) {
+      throw new Error('Share not found');
+    }
+  
+    const newComment: { _id: string, comment_detail: string, comment_writer: string } = {
+      _id:  uuidv4(), // Generate unique comment _id
+      comment_detail: commentInfo.comment_detail,
+      comment_writer: commentInfo.comment_writer,
+    };
+  
+    share.comments.push(newComment);
+    await this.updateShare(_id, share);
+    return share;
+  }
 }

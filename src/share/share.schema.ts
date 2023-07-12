@@ -28,13 +28,10 @@ export class Share {
     like_users: string[];
 
     @Prop({ type: [{ 
-        comment_id: String,
-        comment_username: String,
         comment_detail: String,
         comment_writer: String,
     }]})
     comments: {
-        comment_id: number;
         comment_detail: string;
         comment_writer: string;
     }[];

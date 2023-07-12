@@ -3,7 +3,7 @@
 Get {{server}}/share
 ###
 
-Get {{server}}/share/getGroupPost/group1
+Get {{server}}/share/getGroupPost/group2
 
 ###
 POST {{server}}/share
@@ -11,7 +11,7 @@ Content-Type: application/json
 
 
 {
-    "post_title": "third Post",
+    "post_title": "fisdfrsts Post",
     "post_group": "group2",
     "post_detail": "blahblah",
     "post_img": "image1.jpg",
@@ -24,7 +24,7 @@ Content-Type: application/json
 }
 
 ###
-GET {{server}}/share/getPost/64ae14a6ef30de34d9f57eb0
+GET {{server}}/share/getPost/64ae1f5f122f6c2483c76030
 
 
 ###
@@ -32,20 +32,40 @@ DELETE {{server}}/share/delete/64ae14a6ef30de34d9f57eb0
 
 ###
 
-PUT {{server}}/share/postLike/64ae14bcef30de34d9f57ec0
+PUT {{server}}/share/postLike/64ae1f5f122f6c2483c76030
 Content-Type: application/json
 
 {
   "likeUser": "John"
 }
 
+###
 
-### Create a new comment ###
-POST {{server}}/share/postComment/1
+PUT {{server}}/share/update/64ae1f5f122f6c2483c76030
 Content-Type: application/json
 
 {
-  "comment_id": 1,
-  "comment_detail": "This is a new comment.",
-  "comment_writer": "John"
+    "post_title": "updated Post",
+    "post_group": "group2",
+    "post_detail": "blahblah",
+    "post_img": "image1.jpg",
+    "post_writer": "John Doe",
+    "like_count": 10,
+    "like_users": ["user1", "user2", "user3"],
+    "comments": [
+    ]
+
+}
+
+### Create a new comment ###
+POST {{server}}/share/postComment/64ae26ed360246d145da7366
+Content-Type: application/json
+
+{
+  "comments": [
+    {
+      "comment_detail": "This is a new comment.",
+      "comment_writer": "John"
+    }
+  ]
 }
