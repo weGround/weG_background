@@ -54,9 +54,9 @@ export class SignupService {
       user.mygroup.push(groupname);
       user.mygroup_myprofile.push({
         mygroupname: groupname,
-        mygroup_nickname: '',
+        mygroup_nickname: userid,
         mygroup_img: '',
-        mygroup_detail: '',
+        mygroup_detail: userid,
       });
     
       return await this.signupModel
