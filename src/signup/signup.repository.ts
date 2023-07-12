@@ -194,7 +194,7 @@ export class SignupMongoRepository implements SignupRepository {
       if (groupIndex !== -1) {
         throw new Error('User is already a member of the group');
       }
-      user.mygroup_myprofile.push({ mygroupname: groupname, mygroup_nickname: '', mygroup_img: '', mygroup_detail: '' });
+      user.mygroup_myprofile.push({ mygroupname: groupname, mygroup_nickname: userid, mygroup_img: '', mygroup_detail: userid });
       return await this.SignupModel.findOneAndUpdate(
         { userid },
         { mygroup_myprofile: user.mygroup_myprofile },
